@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,6 +74,8 @@ public class YoutubeSearch extends ListenerAdapter {
         }
           else if ("~stop".equals(command[0]) && "track".equals(command[1])) {
                 stopTrack(event.getChannel());
+        } else if ("~capacity".equals(command[0])) {
+              sendCapacity(event.getChannel());
         }
         //  else if ("~set".equals(command[))
 
@@ -165,14 +168,15 @@ public class YoutubeSearch extends ListenerAdapter {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         musicManager.scheduler.stopTrack();
         manager.closeAudioConnection();
+
         channel.sendMessage("Music was stopped").queue();
-
-
-
 
     }
 
-
+    private void sendCapacity(TextChannel channel) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        channel.sendMessage("Remaining Songs to Put" + musicManager.scheduler.sendQueueRemaningCapacity()).queue();
+    }
 
 
 
