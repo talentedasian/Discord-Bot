@@ -3,6 +3,7 @@ package main;
 import botCommands.BotInfoCommand;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
+import botCommands.botMemberVoiceCommands.MoveMember;
 import ch.qos.logback.core.subst.Token;
 import com.fasterxml.jackson.databind.util.TokenBufferReadContext;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
@@ -38,7 +39,7 @@ public class MainMethod {
 				.setActivity(Activity.listening("Spotify"))
 				.setStatus(OnlineStatus.ONLINE).build();
 
-
+		jda.addEventListener(new MoveMember());
 		jda.addEventListener(new DisconnectMember());
 		jda.addEventListener(new MemberJoinLeave());
 		jda.addEventListener(new BotInfoCommand());
