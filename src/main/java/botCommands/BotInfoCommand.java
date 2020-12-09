@@ -33,7 +33,7 @@ public class BotInfoCommand extends ListenerAdapter {
 					channel.sendMessage(embeds.texts(Color.BLACK, "Commands",
 							"Type the following commands",
 							"`!disconnect me - voice command to disconnect" +
-									"\n!move `",
+									"\n!move \n!jesus (volume number) `",
 							false).build()).queue();
 				}
 
