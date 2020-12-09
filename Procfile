@@ -1,1 +1,1 @@
-worker: java -jar target/bot-1.0-jar-with-dependencies.jar
+worker: java -jar /home/talentedasian/discord-bot/target/bot.discord-0.0.1-SNAPSHOT.jar
