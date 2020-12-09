@@ -33,6 +33,8 @@ public class MemberQualifyForRole extends ListenerAdapter {
                     if (sizeOfMessages == 500) {
                         Role role = roles.stream().filter(m -> m.equals(message[3])).collect(Collectors.toList()).get(0);
                         event.getGuild().addRoleToMember(user, role);
+                    } else {
+                        event.getChannel().sendMessage("Not Yet Qualified!").queue();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
