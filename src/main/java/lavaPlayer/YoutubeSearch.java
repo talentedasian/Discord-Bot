@@ -175,7 +175,7 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private void sendCapacity(TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        channel.sendMessage("Remaining Songs to Put" + musicManager.scheduler.sendQueueRemaningCapacity()).queue();
+        channel.sendMessage("Remaining Songs to Put: " + musicManager.scheduler.sendQueueRemaningCapacity()).queue();
     }
 
 
