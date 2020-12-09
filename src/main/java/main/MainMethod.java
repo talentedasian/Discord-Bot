@@ -1,5 +1,6 @@
 package main;
 
+import GuildRoles.MemberQualifyForRole;
 import botCommands.BotInfoCommand;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
@@ -39,6 +40,7 @@ public class MainMethod {
 				.setActivity(Activity.listening("Spotify"))
 				.setStatus(OnlineStatus.ONLINE).build();
 
+		jda.addEventListener(new MemberQualifyForRole());
 		jda.addEventListener(new MoveMember());
 		jda.addEventListener(new DisconnectMember());
 		jda.addEventListener(new MemberJoinLeave());
