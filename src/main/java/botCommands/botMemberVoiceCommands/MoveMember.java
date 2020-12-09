@@ -25,7 +25,7 @@ public class MoveMember extends ListenerAdapter {
         if (moveMessage.equalsIgnoreCase("!movevoice")) {
             try {
                 assert memberToBeMoved != null;
-                event.getGuild().moveVoiceMember(memberToBeMoved, voiceChannels.get(random));
+                event.getGuild().moveVoiceMember(memberToBeMoved, voiceChannels.get(random)).queue();
                 event.getChannel().sendMessage("IF YOU ARE NOT MOVED TO A NEW VOICE CHANNEL, REPORT AN ISSUE TO `https://github.com/talentedasian/Discord-Bot or https://github.com/godsofheaven/Discord-Bot`")
                         .queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
             } catch (IllegalStateException e) {
