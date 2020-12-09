@@ -1,0 +1,1 @@
+worker: java -jar /home/talentedasian/discord-bot/out/artifacts/bot_discord_jar/bot.discord.jar
