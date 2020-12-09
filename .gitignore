@@ -6,7 +6,7 @@ bot.discord.iml
 .godsofheaven_basic_bot_template
 .idea/libraries/
 src/bot-discord,iml
-
+token.properties
 
 HELP.md
 target/

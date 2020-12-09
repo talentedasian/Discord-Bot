@@ -1,10 +1,8 @@
 package main;
 
 import botCommands.BotInfoCommand;
-import botCommands.PingCommand;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
-import botCommands.botMemberVoiceCommands.MoveMember;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import lavaPlayer.YoutubeSearch;
 import botCommands.botProfanityFilter.ProfanityFilter;
@@ -32,12 +30,11 @@ public class MainMethod {
 			intents.add(GatewayIntent.GUILD_VOICE_STATES);
 			intents.add(GatewayIntent.GUILD_EMOJIS);
 
-		JDA jda = JDABuilder.createDefault("", intents).setAudioSendFactory(new NativeAudioSendFactory())
+		JDA jda = JDABuilder.createDefault("${token}", intents).setAudioSendFactory(new NativeAudioSendFactory())
 				.setActivity(Activity.listening("Spotify"))
 				.setStatus(OnlineStatus.ONLINE).build();
 
-		jda.addEventListener(new PingCommand());
-		jda.addEventListener(new MoveMember());
+
 		jda.addEventListener(new DisconnectMember());
 		jda.addEventListener(new MemberJoinLeave());
 		jda.addEventListener(new BotInfoCommand());
