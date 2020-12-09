@@ -3,6 +3,8 @@ package main;
 import botCommands.BotInfoCommand;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
+import ch.qos.logback.core.subst.Token;
+import com.fasterxml.jackson.databind.util.TokenBufferReadContext;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import lavaPlayer.YoutubeSearch;
 import botCommands.botProfanityFilter.ProfanityFilter;
@@ -16,12 +18,14 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EventListener;
+
 
 public class MainMethod {
 
+	static HiddenToken  token = new HiddenToken();
 
-    public static void main(String[] args)throws LoginException {
+
+	public static void main(String[] args)throws LoginException {
 		Collection<GatewayIntent> intents = new ArrayList<>();
 
 			intents.add(GatewayIntent.GUILD_MEMBERS);
@@ -30,7 +34,7 @@ public class MainMethod {
 			intents.add(GatewayIntent.GUILD_VOICE_STATES);
 			intents.add(GatewayIntent.GUILD_EMOJIS);
 
-		JDA jda = JDABuilder.createDefault("${token}", intents).setAudioSendFactory(new NativeAudioSendFactory())
+		JDA jda = JDABuilder.createDefault(token.getToken(), intents).setAudioSendFactory(new NativeAudioSendFactory())
 				.setActivity(Activity.listening("Spotify"))
 				.setStatus(OnlineStatus.ONLINE).build();
 
@@ -42,4 +46,5 @@ public class MainMethod {
 		jda.addEventListener(new ProfanityFilter());
 		jda.addEventListener(new EmbedCommands());
 	}
+
 }

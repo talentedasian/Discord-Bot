@@ -6,8 +6,8 @@ bot.discord.iml
 .godsofheaven_basic_bot_template
 .idea/libraries/
 src/bot-discord,iml
-token.properties
-
+/src/main/java/main/HiddenToken.java
+src/main/java/main/HiddenToken.java
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
