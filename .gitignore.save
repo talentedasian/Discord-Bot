@@ -4,7 +4,8 @@ target/
 Endveous/
 bin/
 .idea/
-bot.discord.iml
+bot.discord.imlW
 .godsofheaven_basic_bot_template
 .idea/libraries/
-src/bot-discord,iml
+src/discord-bot.iml
+
