@@ -76,8 +76,9 @@ public class YoutubeSearch extends ListenerAdapter {
                 stopTrack(event.getChannel());
         } else if ("~capacity".equals(command[0])) {
               sendCapacity(event.getChannel());
+        } else if ("~set".equals(command[0])) {
+              setVolume(event.getChannel(), Integer.parseInt(command[1]));
         }
-        //  else if ("~set".equals(command[))
 
         super.onGuildMessageReceived(event);
               }
@@ -175,7 +176,12 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private void sendCapacity(TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        channel.sendMessage("Remaining Songs to Put: " + musicManager.scheduler.sendQueueRemaningCapacity()).queue();
+        channel.sendMessage("Remaining Songs to Put: " + musicManager.scheduler.sendQueueRemainingCapacity()).queue();
+    }
+
+    private void setVolume(TextChannel channel, int volume) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        musicManager.scheduler.setVolume(volume);
     }
 
 
