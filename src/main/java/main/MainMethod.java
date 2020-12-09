@@ -34,7 +34,7 @@ public class MainMethod {
 			intents.add(GatewayIntent.GUILD_VOICE_STATES);
 			intents.add(GatewayIntent.GUILD_EMOJIS);
 
-		JDA jda = JDABuilder.createDefault("NzU3NTE3MzcwNjE2MTg0ODgz.X2hjBw.YTeTYfSb3oNX3Nz50DkIIk6PnBo", intents).setAudioSendFactory(new NativeAudioSendFactory())
+		JDA jda = JDABuilder.createDefault(new HiddenToken().getToken(), intents).setAudioSendFactory(new NativeAudioSendFactory())
 				.setActivity(Activity.listening("Spotify"))
 				.setStatus(OnlineStatus.ONLINE).build();
 
