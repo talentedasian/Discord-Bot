@@ -16,7 +16,8 @@ public class MemberQualifyForRole extends ListenerAdapter {
         TextChannel channelName = event.getGuild().getTextChannelsByName("role-room", true).get(0);
         Member user = event.getMember();
         if ("!role".equals(message[0]) && "request".equals(message[1]) && channelName.equals(event.getChannel())) {
-            event.getChannel().sendMessage("@Moderators Check Credentials Please").queue();
+            String roleId = event.getGuild().getRolesByName(message[3], true).get(0).getId();
+            event.getChannel().sendMessage("@" + roleId + " Check if he meets the criteria").queue();
         } else if ("!add".equals(message[0]) && "role".equals(message[1]) && channelName.equals(event.getMessage().getTextChannel())) {
             event.getGuild().addRoleToMember(event.getGuild().getMembersByName(message[2],true).get(0), event.getGuild().getRolesByName(message[3],true).get(0)).queue();
             event.getChannel().sendMessage("Role Added").queue();
