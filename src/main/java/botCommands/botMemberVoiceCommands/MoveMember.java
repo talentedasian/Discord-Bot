@@ -23,7 +23,7 @@ public class MoveMember extends ListenerAdapter {
         Member memberToBeMoved = event.getMember();
         String[] moveMessage = event.getMessage().getContentRaw().split(" ", 1);
         String moveJoinedMessage = String.join(",", moveMessage);
-        if (moveMessage.length == 1 && moveJoinedMessage.equalsIgnoreCase("!move voice")) {
+        if (moveJoinedMessage.equalsIgnoreCase("!move voice")) {
             try {
                 assert memberToBeMoved != null;
                 event.getGuild().moveVoiceMember(memberToBeMoved, voiceChannels.get(random));
