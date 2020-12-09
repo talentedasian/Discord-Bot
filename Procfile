@@ -1,1 +1,1 @@
-worker: java -jar /target/artifacts/bot_discord_jar/bot.discord.jar
+worker: java -jar out/artifacts/bot_discord_jar/bot.discord.jar
