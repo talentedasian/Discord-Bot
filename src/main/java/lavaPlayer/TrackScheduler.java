@@ -17,6 +17,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(TrackScheduler.class);
 
+    private boolean repeat;
 
     /**
      * @param player The audio player this scheduler uses
@@ -28,22 +29,28 @@ public class TrackScheduler extends AudioEventAdapter {
 
     }
 
+    public void setRepeat(boolean repeat) {
+        this.repeat = repeat;
+    }
 
-
+    public boolean isRepeat() {
+        return repeat;
+    }
 
     /**
      * Add the next track to queue or play right away if nothing is in the queue.
      *
      * @param track The track to play or add to queue.
      */
-    public void queue(AudioTrack track, boolean repeat) throws InterruptedException {
+    public void queue(AudioTrack track) throws InterruptedException {
         // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
         // something is playing, it returns false and does nothing. In that case the player was already playing so this
         // track goes to the queue instead.
 
         if (!player.startTrack(track, true) && !(queue.size() == 10)) {
             queue.offer(track);
-            while (repeat == true) {
+
+            while (repeat == false) {
                 queue.offer(player.getPlayingTrack());
                 logger.info("Repeating song");
             }
