@@ -48,11 +48,10 @@ public class TrackScheduler extends AudioEventAdapter {
         // track goes to the queue instead.
 
         if (!player.startTrack(track, true) && !(queue.size() == 10)) {
-            queue.offer(track);
-
-            while (repeat == true) {
-                queue.offer(player.getPlayingTrack());
-                logger.info("Repeating song");
+            if (isRepeat() == false) {
+                queue.offer(track);
+            } else {
+                setRepeating();
             }
         }
     }
@@ -106,6 +105,13 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public AudioTrack getPlayingTrack() { return player.getPlayingTrack(); }
 
+    public void setRepeating () {
+        while (repeat == true) {
+            queue.offer(player.getPlayingTrack());
+            System.out.print("Repeating");
+        }
+    }
+
 
 
 
@@ -113,7 +119,14 @@ public class TrackScheduler extends AudioEventAdapter {
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
         if (endReason.mayStartNext) {
-            nextTrack();
+
+            if (isRepeat() == true) {
+                queue.offer(player.getPlayingTrack());
+                nextTrack();
+                System.out.print("On Repeat");
+            } else {
+                nextTrack();
+            }
         }
     }
 }
