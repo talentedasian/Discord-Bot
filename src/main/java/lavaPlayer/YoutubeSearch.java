@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.w3c.dom.Text;
 
+import javax.sound.midi.Track;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,37 +54,36 @@ public class YoutubeSearch extends ListenerAdapter {
         String[] command = event.getMessage().getContentRaw().split(" ", 2);
 
         if ("~playyt".equals(command[0]) && command.length == 2) {
-            loadAndPlay(event.getChannel(), "ytsearch:" + command[1]);
+              loadAndPlay(event.getChannel(), "ytsearch:" + command[1], false);
             //player.setVolume(//i);
-        }
-        else if ("~playsc".equals(command[0]) && command.length == 2) {
-            loadAndPlay(event.getChannel(), "scsearch:" + command[1]);
-        }
-
-        else if ("~skip".equals(command[0])) {
-            skipTrack(event.getChannel());
-        }
-          else if ("~pause".equals(command[0])) {
+        } else if ("~playsc".equals(command[0]) && command.length == 2) {
+              loadAndPlay(event.getChannel(), "scsearch:" + command[1], false);
+        } else if ("~skip".equals(command[0])) {
+              skipTrack(event.getChannel());
+        } else if ("~pause".equals(command[0])) {
               pauseTrack(event.getChannel());
-        }
-          else if ("~resume".equals(command[0])) {
+        } else if ("~resume".equals(command[0])) {
               resumeTrack(event.getChannel());
-        }
-          else if ("~stop".equals(command[0]) && "music".equals(command[1])) {
-                stopMusic(event.getChannel(), event.getGuild().getAudioManager());
-        }
-          else if ("~stop".equals(command[0]) && "track".equals(command[1])) {
-                stopTrack(event.getChannel());
+        } else if ("~stop".equals(command[0]) && "music".equals(command[1])) {
+              stopMusic(event.getChannel(), event.getGuild().getAudioManager());
+        } else if ("~stop".equals(command[0]) && "track".equals(command[1])) {
+              stopTrack(event.getChannel());
         } else if ("~capacity".equals(command[0])) {
               sendCapacity(event.getChannel());
         } else if ("~set".equals(command[0])) {
               setVolume(event.getChannel(), Integer.parseInt(command[1]));
+        } else if ("~volume".equals(command[0])) {
+              getVolume(event.getChannel());
+        } else if ("~playing".equals(command[0]) && "track".equals(command[1])) {
+              getPlayingTrack(event.getChannel());
+        } else if ("playytrepeat".equals(command[0])  && command.length == 2) {
+              loadAndPlay(event.getChannel(), "ytsearch:" + command[1], true);
         }
 
         super.onGuildMessageReceived(event);
               }
 
-    private void loadAndPlay(final TextChannel channel, final String trackUrl) {
+    private void loadAndPlay(final TextChannel channel, final String trackUrl, boolean repeat) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
 
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
@@ -91,10 +91,16 @@ public class YoutubeSearch extends ListenerAdapter {
             public void trackLoaded(AudioTrack track) {
                 channel.sendMessage("Adding to queue " + track.getInfo().title).queue();
 
-                play(channel.getGuild(), musicManager, track);
+                try {
+                    play(channel.getGuild(), musicManager, track, repeat);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
 
             }
+
+
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
@@ -106,8 +112,11 @@ public class YoutubeSearch extends ListenerAdapter {
 
                 channel.sendMessage("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")").queue();
 
-                play(channel.getGuild(), musicManager, firstTrack);
-
+                try {
+                    play(channel.getGuild(), musicManager, firstTrack, repeat);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
 
             }
@@ -124,11 +133,12 @@ public class YoutubeSearch extends ListenerAdapter {
         });
     }
 
-    private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track) {
+    private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track, boolean repeat) throws InterruptedException {
         connectToFirstVoiceChannel(guild.getAudioManager());
 
-        musicManager.scheduler.queue(track);
-        musicManager.scheduler.resumeTrack();
+            musicManager.scheduler.queue(track, repeat);
+            musicManager.scheduler.resumeTrack();
+
 
 
 
@@ -182,7 +192,26 @@ public class YoutubeSearch extends ListenerAdapter {
     private void setVolume(TextChannel channel, int volume) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         musicManager.scheduler.setVolume(volume);
+        channel.sendMessage("Volume Set to " + musicManager.scheduler);
     }
+
+    private void getVolume (TextChannel channel) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        channel.sendMessage("Current Volume is " + musicManager.scheduler.getVolume());
+    }
+
+    private void getPlayingTrack (TextChannel channel) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        channel.sendMessage("Current Playing Track is " + musicManager.scheduler.getPlayingTrack());
+        TrackScheduler scheduler = musicManager.scheduler;
+    }
+
+
+
+
+
+
+
 
 
 
