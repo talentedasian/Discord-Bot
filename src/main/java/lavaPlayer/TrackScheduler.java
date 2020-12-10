@@ -50,7 +50,7 @@ public class TrackScheduler extends AudioEventAdapter {
         if (!player.startTrack(track, true) && !(queue.size() == 10)) {
             queue.offer(track);
 
-            while (repeat == false) {
+            while (repeat == true) {
                 queue.offer(player.getPlayingTrack());
                 logger.info("Repeating song");
             }
