@@ -23,7 +23,7 @@ public class MemberQualifyForRole extends ListenerAdapter {
                 && (Objects.requireNonNull(event.getMember()).getRoles().contains(role) || event.getMember().isOwner())) {
             event.getGuild().addRoleToMember(event.getMessage().getMentionedMembers().get(0) ,
                     event.getGuild().getRolesByName(message[3], true).get(0)).queue();
-            event.getChannel().sendMessage("Role Added You Can Now Enjoy The Benefits of Being a " + message[2].toUpperCase()).queue();
+            event.getChannel().sendMessage("Role Added You Can Now Enjoy The Benefits of Being a " + message[3].toUpperCase()).queue();
         } else if (message[0].equalsIgnoreCase("!role")  && !event.getChannel().equals(channelName)) {
                 event.getChannel().sendMessage("Please Go To The Correct Room For this Message")
                         .queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
