@@ -18,10 +18,10 @@ public class MemberQualifyForRole extends ListenerAdapter {
         if ("!role".equals(message[0]) && "request".equals(message[1]) && channelName.equals(event.getChannel())) {
             String roleId = event.getGuild().getRolesByName(message[2], true).get(0).getId();
             event.getChannel().sendMessage("<@" + roleId + "> Check if he meets the criteria").queue();
-        } else if ("!add".equals(message[0]) && "role".equals(message[1]) && channelName.equals(event.getChannel())) {
+        } else if ("!role".equals(message[0]) && "add".equals(message[1]) && channelName.equals(event.getChannel())) {
             event.getGuild().addRoleToMember(event.getGuild().getMembersByName(message[2],true).get(0), event.getGuild().getRolesByName(message[3],true).get(0)).queue();
             event.getChannel().sendMessage("Role Added").queue();
-        } else if (!channelName.equals(event.getChannel())) {
+        } else if (message[0].equalsIgnoreCase("!role")  && !channelName.equals(event.getChannel())) {
                 event.getChannel().sendMessage("Please Go To The Correct Room For this Message")
                         .queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
                 event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
