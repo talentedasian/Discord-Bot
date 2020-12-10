@@ -5,8 +5,6 @@ import botCommands.BotInfoCommand;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
 import botCommands.botMemberVoiceCommands.MoveMember;
-import ch.qos.logback.core.subst.Token;
-import com.fasterxml.jackson.databind.util.TokenBufferReadContext;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import lavaPlayer.YoutubeSearch;
 import botCommands.botProfanityFilter.ProfanityFilter;
@@ -16,10 +14,13 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainMethod {
@@ -48,6 +49,19 @@ public class MainMethod {
 		jda.addEventListener(new YoutubeSearch());
 		jda.addEventListener(new ProfanityFilter());
 		jda.addEventListener(new EmbedCommands());
+
+		Map<String,String> jdbcUrlSettings = new HashMap<>();
+		String jdbcDbUrl = System.getenv("JDBC_DATABASE_URL");
+		if (null != jdbcDbUrl) {
+			jdbcUrlSettings.put("hibernate.connection.url", System.getenv("JDBC_DATABASE_URL"));
+		}
+
+		var registry = new StandardServiceRegistryBuilder().
+				configure("hibernate.cfg.xml").
+				applySettings(jdbcUrlSettings).
+				build();
 	}
+
+
 
 }

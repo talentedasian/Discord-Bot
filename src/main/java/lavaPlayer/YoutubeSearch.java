@@ -90,6 +90,7 @@ public class YoutubeSearch extends ListenerAdapter {
     private void loadAndPlay(final TextChannel channel, final String trackUrl, boolean repeat) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
 
+
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
@@ -121,10 +122,11 @@ public class YoutubeSearch extends ListenerAdapter {
                 channel.sendMessage("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")").queue();
 
                 try {
-                    if (musicManager.scheduler.isRepeat() == false) {
+                    if (repeat == false) {
                         playNoRepeat(channel.getGuild(), musicManager, firstTrack);
-                    } else if (musicManager.scheduler.isRepeat() == true) {
+                    } else if (repeat){
                         playWithRepeat(channel.getGuild(), musicManager, firstTrack);
+                        channel.sendMessage("You Chose To Repeat The Song").queue();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

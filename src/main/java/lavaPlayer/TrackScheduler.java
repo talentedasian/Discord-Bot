@@ -51,7 +51,7 @@ public class TrackScheduler extends AudioEventAdapter {
             if (isRepeat() == false) {
                 queue.offer(track);
             } else {
-                setRepeating();
+                queue.offer(player.getPlayingTrack());
             }
         }
     }
