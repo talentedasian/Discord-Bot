@@ -10,24 +10,39 @@ import java.util.concurrent.TimeUnit;
 
 public class MemberQualifyForRole extends ListenerAdapter {
 
+
+
+
+
+    public MemberQualifyForRole () {
+
+    }
+
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         super.onGuildMessageReceived(event);
         String[] message = event.getMessage().getContentRaw().split(" ");
-        Role role = event.getGuild().getRolesByName("Moderator", true).get(0);
+        long moderator = event.getGuild().getRolesByName("Moderator", true).get(0).getIdLong();
+        Role moderatorRole = event.getGuild().getRoleById(moderator);
 
-        var channelName = event.getGuild().getTextChannelsByName("role-room", true).get(0);
+        TextChannel channelName = event.getGuild().getTextChannelsByName("role-room", true).get(0);
+
+        Member mentionedMembers = event.getMessage().getMentionedMembers().get(0);
+        long mentionedMember = mentionedMembers.getIdLong();
+        long roleAssign = event.getGuild().getRolesByName(message[3], true).get(0).getIdLong();
+        Role role = event.getGuild().getRoleById(roleAssign);
+
         if ("!role".equals(message[0]) && "request".equals(message[1]) && event.getChannel().equals(channelName) && message.length == 3) {
-            event.getChannel().sendMessage( role.getAsMention() + " Please Check if he meets the criteria of being a ***" + message[2] + "***").queue();
+            event.getChannel().sendMessage( moderatorRole.getAsMention() + " Please Check if" + event.getMember().getAsMention() +  "he meets the criteria of being a ***" + message[2] + "***").queue();
         } else if ("!role".equals(message[0]) && "add".equals(message[1]) && event.getChannel().equals(channelName)
                 && (Objects.requireNonNull(event.getMember()).getRoles().contains(role) || event.getMember().isOwner())) {
-            event.getGuild().modifyMemberRoles(event.getMessage().getMentionedMembers().get(0), event.getGuild().getRolesByName(message[3], true)).queue();
-            event.getChannel().sendMessage("Congratulations " + event.getMessage().getMentionedMembers().get(0).getAsMention() + ",You are now a ***" + message[3].toUpperCase() + "***")
+            event.getGuild().addRoleToMember(mentionedMember, event.getGuild().getRoleById(roleAssign)).queue();
+            event.getChannel().sendMessage("Congratulations " + mentionedMembers.getAsMention() + ",You are now a ***" + message[3].toUpperCase() + "***")
                     .queue();
         }   else if ("!role".equals(message[0]) && "remove".equals(message[1]) && event.getChannel().equals(channelName)
-                && (Objects.requireNonNull(event.getMember()).getRoles().contains(role) || event.getMember().isOwner())   ) {
-            event.getGuild().removeRoleFromMember(event.getMessage().getMentionedMembers().get(0), event.getGuild().getRolesByName(message[3], true).get(0)).queue();
-            event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + "You Have Been Stripped of off Being a ***" + message[3].toUpperCase() + "***")
+                && (Objects.requireNonNull(event.getMember()).getRoles().contains(moderatorRole) || event.getMember().isOwner())   ) {
+            event.getGuild().removeRoleFromMember(mentionedMember, role).queue();
+            event.getChannel().sendMessage(mentionedMembers.getAsMention() + "You Have Been Stripped of off Being a ***" + message[3].toUpperCase() + "***")
                     .queue();
         }
         else if (message[0].equalsIgnoreCase("!role")  && !event.getChannel().equals(channelName)) {

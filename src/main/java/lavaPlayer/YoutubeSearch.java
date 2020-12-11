@@ -55,7 +55,8 @@ public class YoutubeSearch extends ListenerAdapter {
         String[] command = event.getMessage().getContentRaw().split(" ", 2);
 
         Guild guild = event.getGuild();
-        TextChannel channel = guild.getTextChannelsByName("music-room", true).get(0);
+        long channelId = guild.getTextChannelsByName("music-room", true).get(0).getIdLong();
+        TextChannel channel = guild.getTextChannelById(channelId);
         TextChannel supposedChannel = event.getMessage().getTextChannel();
         if ("~playyt".equals(command[0]) && command.length == 2 && supposedChannel.equals(channel)) {
               loadAndPlay(event.getChannel(), "ytsearch:" + command[1], false);
@@ -211,7 +212,7 @@ public class YoutubeSearch extends ListenerAdapter {
     private void setVolume(TextChannel channel, int volume) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         musicManager.scheduler.setVolume(volume);
-        channel.sendMessage("Volume Set to " + musicManager.scheduler).queue();
+        channel.sendMessage("Volume Set to " + musicManager.scheduler.getVolume()).queue();
     }
 
     private void getVolume (TextChannel channel) {
@@ -221,7 +222,8 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private void getPlayingTrack (TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        channel.sendMessage("Current Playing Track is " + musicManager.scheduler.getPlayingTrack()).queue();
+        channel.sendMessage("Current Playing Track is " + musicManager.scheduler.getPlayingTrack()
+        .getInfo().title).queue();
     }
 
 
@@ -236,8 +238,9 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private static void connectToFirstVoiceChannel(AudioManager audioManager) {
         if (!audioManager.isConnected()) {
-
-            audioManager.openAudioConnection(audioManager.getGuild().getVoiceChannelsByName("Music Room", true).stream().findFirst().orElseThrow(() -> null));
+            long voiceId = audioManager.getGuild().getVoiceChannelsByName("Music Room",true).get(0).getIdLong();
+            VoiceChannel voiceChannel = audioManager.getGuild().getVoiceChannelById(voiceId);
+            audioManager.openAudioConnection(voiceChannel);
         }
     }
 }

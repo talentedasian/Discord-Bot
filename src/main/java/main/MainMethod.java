@@ -15,6 +15,8 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import java.util.Collection;
 
 
 public class MainMethod {
+
 
 
 
@@ -37,7 +40,10 @@ public class MainMethod {
 
 		JDA jda = JDABuilder.createDefault(new HiddenToken().getToken(), intents).setAudioSendFactory(new NativeAudioSendFactory())
 				.setActivity(Activity.listening("Spotify"))
-				.setStatus(OnlineStatus.ONLINE).build();
+				.setStatus(OnlineStatus.ONLINE)
+				.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS, CacheFlag.CLIENT_STATUS, CacheFlag.MEMBER_OVERRIDES)
+				.setChunkingFilter(ChunkingFilter.NONE)
+				.build();
 
 		jda.addEventListener(new InBetween());
 		jda.addEventListener(new MemberQualifyForRole());
@@ -48,6 +54,7 @@ public class MainMethod {
 		jda.addEventListener(new YoutubeSearch());
 		jda.addEventListener(new ProfanityFilter());
 		jda.addEventListener(new EmbedCommands());
+
 
 		}
 

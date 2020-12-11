@@ -32,10 +32,12 @@ public class InBetween extends ListenerAdapter {
         int random1 = new Random().nextInt(13);
         int random2 = new Random().nextInt(13);
         int random3 = new Random().nextInt(13);
+
         if ("!in".equals(message[0]) && "between".equals(message[1])) {
             event.getChannel().sendMessage("Your Card is `" + random1 + "`").queue();
             event.getChannel().sendMessage("The Random Card Drawn is `" + random2 + " and " + random3 + "`").queue();
-            if ((random1 < random2 && random1 > random3) || random1 < random3 && random1 > random2 || (random1 == random2) || (random1 == random3)) {
+            if (random1 == random2 || random1 == random3 ||
+                    (random1 < random2 && random1 > random3 || random1 > random2 && random1 < random3)) {
                 event.getChannel().sendMessage("You Lost!").queue();
 
             } else {
