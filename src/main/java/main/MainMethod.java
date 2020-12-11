@@ -3,6 +3,7 @@ package main;
 import BotCasino.InBetween;
 import GuildRoles.MemberQualifyForRole;
 import botCommands.BotInfoCommand;
+import botCommands.BotWeather;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
 import botCommands.botMemberVoiceCommands.MoveMember;
@@ -51,6 +52,7 @@ public class MainMethod {
 		jda.addEventListener(new YoutubeSearch());
 		jda.addEventListener(new ProfanityFilter());
 		jda.addEventListener(new EmbedCommands());
+		jda.addEventListener(new BotWeather());
 
 		}
 
