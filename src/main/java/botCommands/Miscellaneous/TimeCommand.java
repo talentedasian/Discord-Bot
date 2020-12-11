@@ -1,7 +1,5 @@
 package botCommands.Miscellaneous;
 
-import botCommands.BaseCommand;
-import botCommands.CommandCategory;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.time.LocalDateTime;

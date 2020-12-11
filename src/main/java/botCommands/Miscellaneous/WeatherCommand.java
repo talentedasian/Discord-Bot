@@ -1,7 +1,5 @@
 package botCommands.Miscellaneous;
 
-import botCommands.BaseCommand;
-import botCommands.CommandCategory;
 import net.aksingh.owmjapis.api.APIException;
 import net.aksingh.owmjapis.core.OWM;
 import net.aksingh.owmjapis.model.CurrentWeather;
