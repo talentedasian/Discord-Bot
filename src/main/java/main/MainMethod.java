@@ -2,6 +2,7 @@ package main;
 
 import GuildRoles.MemberQualifyForRole;
 import botCommands.BotInfoCommand;
+import botCommands.botMemberJoin.BotAddToPostgre;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
 import botCommands.botMemberVoiceCommands.MoveMember;
@@ -41,6 +42,7 @@ public class MainMethod {
 				.setActivity(Activity.listening("Spotify"))
 				.setStatus(OnlineStatus.ONLINE).build();
 
+		jda.addEventListener(new BotAddToPostgre());
 		jda.addEventListener(new MemberQualifyForRole());
 		jda.addEventListener(new MoveMember());
 		jda.addEventListener(new DisconnectMember());

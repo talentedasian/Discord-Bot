@@ -1,22 +1,22 @@
 package botDataBase;
 
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Entity
-public class modelForUserCount {
+public class ModelForUserCount implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
+    @Nonnull
     private String memberName;
 
+    @Nullable
     private int swearCounter;
 
     public long getId() {
@@ -53,6 +53,8 @@ public class modelForUserCount {
                 '}';
     }
 
-    public modelForUserCount() {
+    public ModelForUserCount() {
     }
+
+
 }
