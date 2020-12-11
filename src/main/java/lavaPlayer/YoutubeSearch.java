@@ -80,7 +80,7 @@ public class YoutubeSearch extends ListenerAdapter {
               getVolume(event.getChannel());
         } else if ("~playing".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(channel)) {
               getPlayingTrack(event.getChannel());
-        } else if ("playytrepeat".equals(command[0])  && command.length == 2 && supposedChannel.equals(channel)) {
+        } else if ("~playytrepeat".equals(command[0])  && command.length == 2 && supposedChannel.equals(channel)) {
               loadAndPlay(event.getChannel(), "ytsearch:" + command[1], true);
         }
 
@@ -211,18 +211,17 @@ public class YoutubeSearch extends ListenerAdapter {
     private void setVolume(TextChannel channel, int volume) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         musicManager.scheduler.setVolume(volume);
-        channel.sendMessage("Volume Set to " + musicManager.scheduler);
+        channel.sendMessage("Volume Set to " + musicManager.scheduler).queue();
     }
 
     private void getVolume (TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        channel.sendMessage("Current Volume is " + musicManager.scheduler.getVolume());
+        channel.sendMessage("Current Volume is " + musicManager.scheduler.getVolume()).queue();
     }
 
     private void getPlayingTrack (TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        channel.sendMessage("Current Playing Track is " + musicManager.scheduler.getPlayingTrack());
-        TrackScheduler scheduler = musicManager.scheduler;
+        channel.sendMessage("Current Playing Track is " + musicManager.scheduler.getPlayingTrack()).queue();
     }
 
 

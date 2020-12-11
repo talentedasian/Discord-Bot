@@ -19,6 +19,27 @@ public class ModelForUserCount implements Serializable {
     @Nullable
     private int swearCounter;
 
+    @Nonnull
+    private boolean added;
+
+    private int messageCount;
+
+    public int getMessageCount() {
+        return messageCount;
+    }
+
+    public void setMessageCount(int messageCount) {
+        this.messageCount = messageCount;
+    }
+
+    public boolean isAdded() {
+        return added;
+    }
+
+    public void setAdded(boolean added) {
+        this.added = added;
+    }
+
     public long getId() {
         return id;
     }
@@ -46,10 +67,12 @@ public class ModelForUserCount implements Serializable {
 
     @Override
     public String toString() {
-        return "modelForUserCount{" +
+        return "ModelForUserCount{" +
                 "id=" + id +
                 ", memberName='" + memberName + '\'' +
                 ", swearCounter=" + swearCounter +
+                ", added=" + added +
+                ", messageCount=" + messageCount +
                 '}';
     }
 
