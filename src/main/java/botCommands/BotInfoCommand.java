@@ -73,15 +73,6 @@ public class BotInfoCommand extends ListenerAdapter {
 				case "!underlinebolditalic" -> channel.sendMessage(embeds.textsEmbedMessage(Color.DARK_GRAY,
 						"```put  '__***' before and after your text```")
 				).queue(m -> m.delete().queueAfter(5, TimeUnit.SECONDS));
-				case "!roll" ->{
-					channel.sendMessage(embeds.textString(embeds.rollDice())).queue();
-				}
-				case "!8ball" ->{
-					channel.sendMessage(embeds.textString(embeds.eightBall())).queue();
-				}
-				case "!time" ->{
-					channel.sendMessage(embeds.textString(embeds.time())).queue();
-				}
 			}
 	}
 }	
