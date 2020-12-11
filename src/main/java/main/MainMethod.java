@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
@@ -33,10 +34,8 @@ public class MainMethod {
 		Collection<GatewayIntent> intents = new ArrayList<>();
 
 		intents.add(GatewayIntent.GUILD_MEMBERS);
-		intents.add(GatewayIntent.GUILD_MESSAGE_TYPING);
 		intents.add(GatewayIntent.GUILD_MESSAGES);
 		intents.add(GatewayIntent.GUILD_VOICE_STATES);
-		intents.add(GatewayIntent.GUILD_EMOJIS);
 
 		JDA jda = JDABuilder.createDefault(new HiddenToken().getToken(), intents).setAudioSendFactory(new NativeAudioSendFactory())
 				.setActivity(Activity.listening("Spotify"))
@@ -44,6 +43,8 @@ public class MainMethod {
 				.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS, CacheFlag.CLIENT_STATUS, CacheFlag.MEMBER_OVERRIDES)
 				.setChunkingFilter(ChunkingFilter.NONE)
 				.setAutoReconnect(true)
+				.disableIntents(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_BANS, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.GUILD_INVITES, GatewayIntent.DIRECT_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES)
+				.setMemberCachePolicy(MemberCachePolicy.ONLINE.or(MemberCachePolicy.VOICE))
 				.build();
 
 

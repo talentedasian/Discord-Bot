@@ -1,5 +1,6 @@
 package lavaPlayer;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayer;
 
 public class GuildMusicManager {
@@ -12,12 +13,8 @@ public class GuildMusicManager {
      */
     public final TrackScheduler scheduler;
 
-
-
-
-
-    public GuildMusicManager(DefaultAudioPlayer player) {
-        this.player = player;
+    public GuildMusicManager(AudioPlayerManager manager) {
+        this.player = (DefaultAudioPlayer) manager.createPlayer();
         this.scheduler = new TrackScheduler(player);
         player.addListener(scheduler);
     }

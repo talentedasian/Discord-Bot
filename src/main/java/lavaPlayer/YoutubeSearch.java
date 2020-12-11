@@ -18,33 +18,17 @@ import java.util.Map;
 public class YoutubeSearch extends ListenerAdapter {
 
     private final DefaultAudioPlayerManager playerManager;
-    private final Map<Long, GuildMusicManager> musicManagers;
     private final DefaultAudioPlayer player;
 
-
     public YoutubeSearch() {
-        this.musicManagers = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
         playerManager.registerSourceManager(new YoutubeAudioSourceManager());
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
-        this.player = new DefaultAudioPlayer(playerManager);
+        this.player = (DefaultAudioPlayer) playerManager.createPlayer();
 
     }
-
-    private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
-        long guildId = Long.parseLong(guild.getId());
-        GuildMusicManager musicManager = musicManagers.get(guildId);
-
-        if (musicManager == null) {
-            musicManager = new GuildMusicManager(player);
-            musicManagers.put(guildId, musicManager);
-        }
-
-        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
-
-        return musicManager;
-    }
+    
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
@@ -216,6 +200,12 @@ public class YoutubeSearch extends ListenerAdapter {
             audioManager.openAudioConnection(voiceChannel);
         }
     }
+
+    public AudioPlayerSendHandler getSendHandler() {
+        return new AudioPlayerSendHandler(player);
+    }
+
+
 }
 
 
