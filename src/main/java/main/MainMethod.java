@@ -43,6 +43,7 @@ public class MainMethod {
 				.setStatus(OnlineStatus.ONLINE)
 				.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS, CacheFlag.CLIENT_STATUS, CacheFlag.MEMBER_OVERRIDES)
 				.setChunkingFilter(ChunkingFilter.NONE)
+				.setAutoReconnect(true)
 				.build();
 
 
