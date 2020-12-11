@@ -1,7 +1,7 @@
 package BotCasino;
 
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import java.util.Random;
@@ -9,14 +9,12 @@ import java.util.Random;
 public class InBetween extends ListenerAdapter {
 
 
-
-
     @Override
-    public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
-        super.onPrivateMessageReceived(event);
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+        super.onGuildMessageReceived(event);
         String[] message = event.getMessage().getContentRaw().split(" ");
         TextChannel channel = event.getMessage().getTextChannel();
-        TextChannel supposedChannel = event.getJDA().getGuildsByName("LG TV", true).get(0).getTextChannelsByName("casino",true).get(0);
+        TextChannel supposedChannel = event.getJDA().getGuildsByName("LG TV", true).get(0).getTextChannelsByName("casino", true).get(0);
         int random1 = new Random().nextInt(13);
         int random2 = new Random().nextInt(13);
         int random3 = new Random().nextInt(13);
@@ -29,8 +27,8 @@ public class InBetween extends ListenerAdapter {
             } else {
                 event.getChannel().sendMessage("Congratulations You Won!");
             }
-
-            }
         }
-
+    }
 }
+
+
