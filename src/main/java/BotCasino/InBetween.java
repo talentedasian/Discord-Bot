@@ -28,7 +28,7 @@ public class InBetween extends ListenerAdapter {
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         super.onGuildMessageReceived(event);
         String[] message = event.getMessage().getContentRaw().split(" ");
-        TextChannel channel = event.getMessage().getTextChannel();
+        long channelId = event.getMessage().getTextChannel().getIdLong();
         int random1 = new Random().nextInt(13);
         int random2 = new Random().nextInt(13);
         int random3 = new Random().nextInt(13);

@@ -27,22 +27,22 @@ public class MemberQualifyForRole extends ListenerAdapter {
 
         TextChannel channelName = event.getGuild().getTextChannelsByName("role-room", true).get(0);
 
-        Member mentionedMembers = event.getMessage().getMentionedMembers().get(0);
-        long mentionedMember = mentionedMembers.getIdLong();
+        long mentionedMemberId = event.getMessage().getMentionedMembers().get(0).getIdLong();
+        Member mentionedMember = event.getChannel().getGuild().getMemberById(mentionedMemberId);
         long roleAssign = event.getGuild().getRolesByName(message[3], true).get(0).getIdLong();
         Role role = event.getGuild().getRoleById(roleAssign);
 
-        if ("!role".equals(message[0]) && "request".equals(message[1]) && event.getChannel().equals(channelName) && message.length == 3) {
+        if ("!role".equals(message[0]) && "request".equals(message[1]) && event.getChannel().equals(channelName)) {
             event.getChannel().sendMessage( moderatorRole.getAsMention() + " Please Check if" + event.getMember().getAsMention() +  "he meets the criteria of being a ***" + message[2] + "***").queue();
         } else if ("!role".equals(message[0]) && "add".equals(message[1]) && event.getChannel().equals(channelName)
                 && (Objects.requireNonNull(event.getMember()).getRoles().contains(role) || event.getMember().isOwner())) {
             event.getGuild().addRoleToMember(mentionedMember, event.getGuild().getRoleById(roleAssign)).queue();
-            event.getChannel().sendMessage("Congratulations " + mentionedMembers.getAsMention() + ",You are now a ***" + message[3].toUpperCase() + "***")
+            event.getChannel().sendMessage("Congratulations " + mentionedMember.getAsMention() + ",You are now a ***" + message[3].toUpperCase() + "***")
                     .queue();
         }   else if ("!role".equals(message[0]) && "remove".equals(message[1]) && event.getChannel().equals(channelName)
                 && (Objects.requireNonNull(event.getMember()).getRoles().contains(moderatorRole) || event.getMember().isOwner())   ) {
             event.getGuild().removeRoleFromMember(mentionedMember, role).queue();
-            event.getChannel().sendMessage(mentionedMembers.getAsMention() + "You Have Been Stripped of off Being a ***" + message[3].toUpperCase() + "***")
+            event.getChannel().sendMessage(mentionedMember.getAsMention() + "You Have Been Stripped of off Being a ***" + message[3].toUpperCase() + "***")
                     .queue();
         }
         else if (message[0].equalsIgnoreCase("!role")  && !event.getChannel().equals(channelName)) {

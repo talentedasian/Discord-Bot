@@ -1,10 +1,7 @@
 package botCommands;
 
-import at.mukprojects.giphy4j.exception.GiphyException;
 import embedBuilders.EmbedCommands;
-import net.aksingh.owmjapis.api.APIException;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -19,7 +16,8 @@ public class BotInfoCommand extends ListenerAdapter {
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) throws NullPointerException {
 			super.onMessageReceived(event);
-			MessageChannel channel = event.getChannel();
+			long channelId = event.getChannel().getIdLong();
+			TextChannel channel = event.getGuild().getTextChannelById(channelId);
 			String message = event.getMessage().getContentRaw();
 
 

@@ -45,6 +45,7 @@ public class MainMethod {
 				.setChunkingFilter(ChunkingFilter.NONE)
 				.build();
 
+
 		jda.addEventListener(new InBetween());
 		jda.addEventListener(new MemberQualifyForRole());
 		jda.addEventListener(new MoveMember());
