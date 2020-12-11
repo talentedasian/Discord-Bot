@@ -3,7 +3,6 @@ package main;
 import BotCasino.InBetween;
 import GuildRoles.MemberQualifyForRole;
 import botCommands.BotInfoCommand;
-import botCommands.BotWeather;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
 import botCommands.botMemberVoiceCommands.MoveMember;
@@ -16,13 +15,10 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class MainMethod {
@@ -52,7 +48,6 @@ public class MainMethod {
 		jda.addEventListener(new YoutubeSearch());
 		jda.addEventListener(new ProfanityFilter());
 		jda.addEventListener(new EmbedCommands());
-		jda.addEventListener(new BotWeather());
 
 		}
 
