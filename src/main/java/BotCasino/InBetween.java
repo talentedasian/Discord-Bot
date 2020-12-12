@@ -106,7 +106,7 @@ public class InBetween extends ListenerAdapter {
         if ("!bawas".equals(message[0]) && "points".equals(message[1])
                 && "sa".equals(message[3]) && "langit".equals(message[4])) {
 
-            event.getChannel().sendMessage("`BAWAS POINTS KA SA LANGIT`" +  event.getMessage().getMentionedMembers().get(0).getAsMention()).queue();
+            event.getChannel().sendMessage("**BAWAS POINTS KA SA LANGIT** " +  event.getMessage().getMentionedMembers().get(0).getAsMention()).queue();
         }
 
     }

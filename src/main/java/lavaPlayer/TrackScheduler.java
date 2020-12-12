@@ -63,12 +63,7 @@ public class TrackScheduler extends AudioEventAdapter {
         // track goes to the queue instead.
 
         if (!player.startTrack(track, true) && !(queue.size() == 10)) {
-            if (isRepeat() == false) {
-                queue.offer(track);
-            } else {
-                while (isRepeat() == true)
-                queue.offer(player.getPlayingTrack());
-            }
+            queue.offer(track);
         }
     }
 
@@ -108,9 +103,7 @@ public class TrackScheduler extends AudioEventAdapter {
         player.playTrack(queue.poll());
     }
 
-    public int sendQueueRemainingCapacity() {
-        return queue.remainingCapacity();
-    }
+
 
     public void setVolume (int volume) {
         player.setVolume(volume);

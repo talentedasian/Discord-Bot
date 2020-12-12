@@ -7,6 +7,7 @@ import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
 import botCommands.botMemberVoiceCommands.MoveMember;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
+import lavaPlayer.MassChurch;
 import lavaPlayer.YoutubeSearch;
 import botCommands.botProfanityFilter.ProfanityFilter;
 import embedBuilders.EmbedCommands;
@@ -47,8 +48,9 @@ public class MainMethod implements EventListener {
 				.setActivity(Activity.listening("Spotify"))
 				.setStatus(OnlineStatus.ONLINE)
 				.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS, CacheFlag.CLIENT_STATUS, CacheFlag.MEMBER_OVERRIDES)
-				.setChunkingFilter(ChunkingFilter.NONE)
+				.setChunkingFilter(ChunkingFilter.ALL)
 				.setAutoReconnect(true)
+				.addEventListeners(new MassChurch())
 				.addEventListeners(new InBetween())
 				.addEventListeners(new MemberQualifyForRole())
 				.addEventListeners(new MoveMember())
