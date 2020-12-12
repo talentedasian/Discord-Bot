@@ -96,7 +96,9 @@ public class YoutubeSearch extends ListenerAdapter {
             setMass(event.getChannel(), true);
             loadAndPlay(event.getChannel(), "ytsearch:" + command[3]);
             event.getChannel().sendMessage("**MAY MISA TAYO!!!!!** " + event.getGuild().getRoleById(mention).getAsMention()).queue();
-        } else if (!event.getAuthor().isBot() && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass() && event.getMember().getRoles().contains(event.getGuild().getRoleById(moderator))) {
+        } else if (!event.getAuthor().isBot() && supposedChannel.equals(event.getGuild().getTextChannelById(channelId))
+                && musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass() && event.getMember().getRoles().contains(event.getGuild().getRoleById(moderator))
+                && !event.getMessage().equals("!massoff")) {
             event.getMessage().delete().queueAfter(4, TimeUnit.SECONDS);
             event.getChannel().sendMessage("Bawal Maingay sa **MISA TANG INA**").queue();
         } else if ("!massoff".equals(command[0]) && event.getMember().getRoles().contains(event.getGuild().getRoleById(moderator))) {

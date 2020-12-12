@@ -44,6 +44,10 @@ public class MemberQualifyForRole extends ListenerAdapter {
             event.getGuild().removeRoleFromMember(mentionedMember, role).queue();
             event.getChannel().sendMessage(mentionedMember.getAsMention() + "You Have Been Stripped of off Being a ***" + message[3].toUpperCase() + "***")
                     .queue();
+        } else if ("!role".equals(message[0]) && "add".equals(message[1]) && "everyone".equals(message[2]) && event.getChannel().equals(channelName)
+                && (Objects.requireNonNull(event.getMember()).getRoles().contains(role) || event.getMember().isOwner())) {
+                event.getGuild().getMembers().forEach(m -> event.getGuild().modifyMemberRoles
+                        (event.getGuild().getMemberById(m.getIdLong()), event.getMessage().getMentionedRoles()));
         }
         else if (message[0].equalsIgnoreCase("!role")  && !event.getChannel().equals(channelName)) {
             event.getChannel().sendMessage("Please Go To The Correct Room For this Message")
