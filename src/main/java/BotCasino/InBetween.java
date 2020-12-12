@@ -73,13 +73,13 @@ public class InBetween extends ListenerAdapter {
 
                 // convert seconds to milliseconds
                 Date dateSunSet = new java.util.Date(sunsetUnixStyle*1000L);
-                Date dataSunRise = new Date(sunriseUnixStyle*1000L);
+                Date dateSunRise = new Date(sunriseUnixStyle*1000L);
                 // the format of your date
                 SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
                 // give a timezone reference for formatting (see comment at the bottom)
                 sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT+8"));
                 String formattedSunsetDate = sdf.format(dateSunSet);
-                String formattedSunriseDate = sdf.format(dateSunSet);
+                String formattedSunriseDate = sdf.format(dateSunRise);
 
 
 

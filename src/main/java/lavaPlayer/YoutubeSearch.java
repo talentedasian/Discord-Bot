@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -53,6 +54,7 @@ public class YoutubeSearch extends ListenerAdapter {
 
         Guild guild = event.getGuild();
         long channelId = guild.getTextChannelsByName("music-room", true).get(0).getIdLong();
+        long mention = event.getMessage().getMentionedMembers(guild).get(0).getIdLong();
         TextChannel supposedChannel = event.getMessage().getTextChannel();
         if ("~playyt".equals(command[0]) && command.length == 2 && supposedChannel.equals(event.getGuild().getTextChannelById(channelId))) {
               loadAndPlay(event.getChannel(), "ytsearch:" + command[1]);
@@ -83,6 +85,14 @@ public class YoutubeSearch extends ListenerAdapter {
             setRepeat(event.getChannel(), true);
         } else if ("~list".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId))) {
             returnQueue(event.getChannel());
+        } else if ("!homily".equals(command[0]) && "tayo".equals(command[1]) && "ngayon".equals(command[2])) {
+            loadAndPlay(event.getChannel(), "ytsearch" + command[3]);
+            event.getGuild().getTextChannelById(channelId).sendMessage("MISA " + event.getGuild().getMemberById(mention).getAsMention());
+
+        } else if (event.getAuthor().isBot()) {
+            event.getMessage().delete().queue(m -> {
+                m.toString(); event.getChannel().sendMessage("Bawal Maingay sa **MISA TANG INA**").queue();
+            });
         }
 
         super.onGuildMessageReceived(event);
@@ -205,13 +215,13 @@ public class YoutubeSearch extends ListenerAdapter {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
 
         channel.sendMessage("Current Playing Track is " + musicManagers.scheduler.getPlayingTrack()
-        .getInfo().title + "by " + musicManagers.scheduler.getPlayingTrack().getInfo().title + "." + musicManagers.scheduler.getPlayingTrack().getInfo().length + " Remaining").queue();
+        .getInfo().title + "by " + musicManagers.scheduler.getPlayingTrack().getInfo().title + "." + musicManagers.scheduler.getPlayingTrack().getInfo().length/60000 + " Remaining").queue();
     }
 
     private void setRepeat (TextChannel channel, boolean repeat) {
             GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
 
-        if (musicManager.scheduler.isRepeat()) {
+        if (!musicManager.scheduler.isRepeat()) {
             channel.sendMessage("On Repeat OFF").queue();
         } else {
             channel.sendMessage("On Repeat ON").queue();
@@ -227,20 +237,21 @@ public class YoutubeSearch extends ListenerAdapter {
             if (queue.isEmpty()) {
                 channel.sendMessage("No tracks in queue").queue();
             } else {
-                EmbedBuilder builder = new EmbedBuilder();
-                builder.setColor(Color.BLUE);
+
                 int trackCount = 0;
                 for (AudioTrack track : queue) {
                    if (trackCount > 10) {
-                        builder.addField(String.valueOf(track.getPosition())
+                       MessageEmbed builder = new EmbedBuilder()
+                       .setColor(Color.BLUE)
+                       .addField(String.valueOf(track.getPosition())
                                 ,   "Title: " + track.getInfo().title + "Singer: " + track.getInfo().author +
-                                        "Playing? " + track.getState() + "Length: " + track.getInfo().length
-                                , true);
+                                        "Playing? " + track.getState() + "Length: " + track.getInfo().length/60000
+                                , true).build();
+                       channel.sendMessage(builder).queue();
 
                         trackCount++;
                    }
                 }
-                channel.sendMessage(builder.build()).queue();
             }
         }
     }

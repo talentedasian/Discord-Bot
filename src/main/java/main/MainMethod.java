@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -22,6 +24,8 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class MainMethod {
@@ -30,7 +34,7 @@ public class MainMethod {
 
 
 
-	public static void main(String[] args)throws LoginException {
+	public static void main(String[] args) throws LoginException, InterruptedException {
 		Collection<GatewayIntent> intents = new ArrayList<>();
 
 		intents.add(GatewayIntent.GUILD_MEMBERS);
@@ -43,23 +47,22 @@ public class MainMethod {
 				.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS, CacheFlag.CLIENT_STATUS, CacheFlag.MEMBER_OVERRIDES)
 				.setChunkingFilter(ChunkingFilter.NONE)
 				.setAutoReconnect(true)
+				.addEventListeners(new InBetween())
+				.addEventListeners(new MemberQualifyForRole())
+				.addEventListeners(new MoveMember())
+				.addEventListeners(new DisconnectMember())
+				.addEventListeners(new MemberJoinLeave())
+				.addEventListeners(new BotInfoCommand())
+				.addEventListeners(new YoutubeSearch())
+				.addEventListeners(new ProfanityFilter())
+				.addEventListeners(new EmbedCommands())
 				.disableIntents(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_BANS, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.GUILD_INVITES, GatewayIntent.DIRECT_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES)
 				.setMemberCachePolicy(MemberCachePolicy.ONLINE.or(MemberCachePolicy.VOICE))
 				.build();
 
+				jda.awaitReady();
 
-		jda.addEventListener(new InBetween());
-		jda.addEventListener(new MemberQualifyForRole());
-		jda.addEventListener(new MoveMember());
-		jda.addEventListener(new DisconnectMember());
-		jda.addEventListener(new MemberJoinLeave());
-		jda.addEventListener(new BotInfoCommand());
-		jda.addEventListener(new YoutubeSearch());
-		jda.addEventListener(new ProfanityFilter());
-		jda.addEventListener(new EmbedCommands());
-
-
-		}
+	}
 
 
 

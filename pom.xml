@@ -39,21 +39,9 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>6.0.0.Alpha6</version>
-		</dependency>
-
-		<dependency>
 			<groupId>net.aksingh</groupId>
 			<artifactId>owm-japis</artifactId>
 			<version>2.5.3.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.2.1</version>
 		</dependency>
 
 		<dependency>
