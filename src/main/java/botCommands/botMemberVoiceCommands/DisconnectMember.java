@@ -12,11 +12,10 @@ public class DisconnectMember extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         super.onGuildMessageReceived(event);
         long memberToBeDisconnectedId = event.getMember().getIdLong();
-        Member memberToBeDisconnected = event.getGuild().getMemberById(memberToBeDisconnectedId);
         String[] disconnectMessage = event.getMessage().getContentRaw().split(" ");
         String disconnectJoinedMessage = String.join(",", disconnectMessage);
             if (disconnectMessage.length == 1 && disconnectJoinedMessage.equalsIgnoreCase("!disconnect me")) {
-                event.getGuild().kickVoiceMember(memberToBeDisconnected).queue();
+                event.getGuild().kickVoiceMember(event.getGuild().getMemberById(memberToBeDisconnectedId)).queue();
                 event.getChannel().sendMessage("YOU HAVE BEEN DISCONNECTED IN THE VOICE CHANNEL").queue(
                         m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
             }

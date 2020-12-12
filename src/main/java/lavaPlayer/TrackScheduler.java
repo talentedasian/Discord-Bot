@@ -13,6 +13,10 @@ public class TrackScheduler extends AudioEventAdapter {
     private final DefaultAudioPlayer player;
     private final BlockingQueue<AudioTrack> queue;
 
+    public BlockingQueue<AudioTrack> getQueue() {
+        return queue;
+    }
+
     private boolean repeat;
 
     /**
@@ -89,6 +93,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public int getVolume () { return player.getVolume(); }
 
     public AudioTrack getPlayingTrack() { return player.getPlayingTrack(); }
+
 
 
 
