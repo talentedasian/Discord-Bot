@@ -33,8 +33,6 @@ public class YoutubeSearch extends ListenerAdapter {
     }
 
 
-
-
     private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
         long guildId = Long.parseLong(guild.getId());
         GuildMusicManager musicManager = musicManagers.get(guildId);
@@ -86,12 +84,12 @@ public class YoutubeSearch extends ListenerAdapter {
         } else if ("~list".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId))) {
             returnQueue(event.getChannel());
         }
+
         super.onGuildMessageReceived(event);
               }
 
     private void loadAndPlay(final TextChannel channel, final String trackUrl) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-
 
         playerManager.loadItemOrdered(getGuildAudioPlayer(channel.getGuild()), trackUrl, new AudioLoadResultHandler() {
             @Override
@@ -101,8 +99,6 @@ public class YoutubeSearch extends ListenerAdapter {
                     play(channel.getGuild(), track);
 
             }
-
-
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
@@ -114,6 +110,8 @@ public class YoutubeSearch extends ListenerAdapter {
 
                 channel.sendMessage("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")").queue();
                         play(channel.getGuild(), firstTrack);
+
+
             }
 
             @Override
@@ -132,13 +130,13 @@ public class YoutubeSearch extends ListenerAdapter {
         connectToFirstVoiceChannel(guild.getAudioManager());
 
         GuildMusicManager musicManagers = getGuildAudioPlayer(guild);
-
-        musicManagers.scheduler.queue(track);
+        try {
+            musicManagers.scheduler.queue(track);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         musicManagers.scheduler.resumeTrack();
     }
-
-
-
 
     private void skipTrack(TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
@@ -219,7 +217,6 @@ public class YoutubeSearch extends ListenerAdapter {
             channel.sendMessage("On Repeat ON").queue();
         }
     }
-
     private void returnQueue(TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
 
