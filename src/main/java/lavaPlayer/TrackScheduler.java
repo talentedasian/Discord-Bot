@@ -16,6 +16,16 @@ public class TrackScheduler extends AudioEventAdapter {
     private final BlockingQueue<AudioTrack> queue;
     AudioTrack lastTrack;
 
+    private boolean mass;
+
+    public boolean isMass() {
+        return mass;
+    }
+
+    public void setMass(boolean mass) {
+        this.mass = mass;
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(TrackScheduler.class);
 
     public BlockingQueue<AudioTrack> getQueue() {
