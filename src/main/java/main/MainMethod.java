@@ -25,11 +25,12 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EventListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class MainMethod extends ListenerAdapter {
+public class MainMethod implements EventListener {
 
 
 
@@ -56,7 +57,6 @@ public class MainMethod extends ListenerAdapter {
 				.addEventListeners(new BotInfoCommand())
 				.addEventListeners(new YoutubeSearch())
 				.addEventListeners(new ProfanityFilter())
-				.addEventListeners(new EmbedCommands())
 				.disableIntents(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_BANS, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.GUILD_INVITES, GatewayIntent.DIRECT_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES)
 				.setMemberCachePolicy(MemberCachePolicy.ONLINE.or(MemberCachePolicy.VOICE))
 				.build();

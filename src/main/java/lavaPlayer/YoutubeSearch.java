@@ -51,7 +51,6 @@ public class YoutubeSearch extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String[] command = event.getMessage().getContentRaw().split(" ", 2);
-
         Guild guild = event.getGuild();
         long channelId = guild.getTextChannelsByName("music-room", true).get(0).getIdLong();
         long mention = event.getMessage().getMentionedMembers(guild).get(0).getIdLong();
@@ -85,11 +84,11 @@ public class YoutubeSearch extends ListenerAdapter {
             setRepeat(event.getChannel(), true);
         } else if ("~list".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId))) {
             returnQueue(event.getChannel());
-        } else if ("!homily".equals(command[0]) && "tayo".equals(command[1]) && "ngayon".equals(command[2])) {
+        } else if ("!homily".equals(command[0]) && "tayo".equals(command[1]) && "ngayon".equals(command[2]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId))) {
             loadAndPlay(event.getChannel(), "ytsearch" + command[3]);
-            event.getGuild().getTextChannelById(channelId).sendMessage("MISA " + event.getGuild().getMemberById(mention).getAsMention());
+            event.getGuild().getTextChannelById(channelId).sendMessage("MISA " + event.getGuild().getMemberById(mention).getAsMention()).queue();
 
-        } else if (event.getAuthor().isBot()) {
+        } else if (event.getAuthor().isBot() && supposedChannel.equals(event.getGuild().getTextChannelById(channelId))) {
             event.getMessage().delete().queue(m -> {
                 m.toString(); event.getChannel().sendMessage("Bawal Maingay sa **MISA TANG INA**").queue();
             });
