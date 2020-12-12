@@ -63,34 +63,34 @@ public class YoutubeSearch extends ListenerAdapter {
         long moderator = event.getGuild().getRolesByName("Moderator", true).get(0).getIdLong();
 
 
-        if ("~playyt".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        if ("~playyt".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               loadAndPlay(event.getChannel(), "ytsearch:" + command[1]);
             //player.setVolume(//i);
-        } else if ("~playsc".equals(command[0]) && command.length == 2 && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~playsc".equals(command[0]) && command.length == 2 && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               loadAndPlay(event.getChannel(), "scsearch:" + command[1]);
-        } else if ("~skip".equals(command[0]) && command.length == 2 && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~skip".equals(command[0]) && command.length == 2 && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               skipTrack(event.getChannel());
-        } else if ("~pause".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~pause".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               pauseTrack(event.getChannel());
-        } else if ("~resume".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~resume".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               resumeTrack(event.getChannel());
-        } else if ("~stop".equals(command[0]) && "music".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~stop".equals(command[0]) && "music".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               stopMusic(event.getChannel(), event.getGuild().getAudioManager());
-        } else if ("~stop".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~stop".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               stopTrack(event.getChannel());
-        } else if ("~capacity".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~capacity".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               sendCapacity(event.getChannel());
-        } else if ("~set".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~set".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               setVolume(event.getChannel(), Integer.parseInt(command[1]));
-        } else if ("~volume".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~volume".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               getVolume(event.getChannel());
-        } else if ("~playing".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~playing".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               getPlayingTrack(event.getChannel());
-        } else if ("~repeat".equals(command[0]) && "off".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~repeat".equals(command[0]) && "off".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
               setRepeat(event.getChannel(), false);
-        } else if ("~repeat".equals(command[0]) && "on".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~repeat".equals(command[0]) && "on".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
             setRepeat(event.getChannel(), true);
-        } else if ("~list".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !musicManagers.get(event.getGuild().getIdLong()).scheduler.isMass()) {
+        } else if ("~list".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId)) && !getGuildAudioPlayer(guild).scheduler.isMass()) {
             returnQueue(event.getChannel());
         } else if ("!homily".equals(command[0]) && "tayo".equals(command[1]) && "ngayon".equals(command[2]) && supposedChannel.equals(event.getGuild().getTextChannelById(channelId))) {
             setMass(event.getChannel(), true);
