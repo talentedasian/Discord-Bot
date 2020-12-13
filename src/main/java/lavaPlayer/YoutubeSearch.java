@@ -56,25 +56,25 @@ public class YoutubeSearch extends ListenerAdapter {
 
         if ("~playyt".equals(command[0]) && command.length == 2 && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
               loadAndPlay(event.getChannel(), "ytsearch: " + command[1]);
-              event.getChannel().sendMessage("**Searching** :mag_right: for " + command[1]).queue();
+              event.getChannel().sendMessage("**Jesus Searching** :mag_right: for " + command[1]).queue();
         } else if ("~playsc".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
               loadAndPlay(event.getChannel(), "scsearch: " + command[1]);
         } else if ("~skip".equals(command[0])  && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              skipTrack(event.getChannel());
+                skipTrack(event.getChannel());
         } else if ("~pause".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              pauseTrack(event.getChannel());
+                pauseTrack(event.getChannel());
         } else if ("~resume".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              resumeTrack(event.getChannel());
+            resumeTrack(event.getChannel());
         } else if ("~stop".equals(command[0]) && "music".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              stopMusic(event.getChannel(), event.getGuild().getAudioManager());
+                stopMusic(event.getChannel(), event.getGuild().getAudioManager());
         } else if ("~stop".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              stopTrack(event.getChannel());
+            stopTrack(event.getChannel());
         } else if ("~set".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
               setVolume(event.getChannel(), Integer.parseInt(command[1]));
         } else if ("~volume".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
               getVolume(event.getChannel());
         } else if ("~playing".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              getPlayingTrack(event.getChannel());
+            getPlayingTrack(event.getChannel());
         } else if ("~repeat".equals(command[0]) && "off".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
               setRepeat(event.getChannel(), false);
         } else if ("~repeat".equals(command[0]) && "on".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
@@ -94,8 +94,13 @@ public class YoutubeSearch extends ListenerAdapter {
         playerManager.loadItemOrdered(getGuildAudioPlayer(channel.getGuild()), trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage("Adding To Queue **" + track.getInfo().title + " ** by " + " **" + track.getInfo().author + "**").queue();
-
+                channel.sendMessage("Jesus Adding")
+                        .append(track.getInfo().title)
+                        .append(" ** by ")
+                        .append(track.getInfo().author)
+                        .append(" " + TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length))
+                        .append(" and in case you want to search it up on youtube " + track.getInfo().uri)
+                        .queue();
                     play(channel.getGuild(), track);
 
             }
@@ -108,7 +113,13 @@ public class YoutubeSearch extends ListenerAdapter {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                channel.sendMessage("Adding To Queue **" + firstTrack.getInfo().title +  firstTrack.getInfo().title + "** by **" + firstTrack.getInfo().author + "**").queue();
+                channel.sendMessage("Jesus Adding")
+                        .append(firstTrack.getInfo().title)
+                        .append(" ** by ")
+                        .append(firstTrack.getInfo().author)
+                        .append(" " + TimeUnit.MILLISECONDS.toMinutes(firstTrack.getInfo().length))
+                        .append(" and in case you want to search it up on youtube " + firstTrack.getInfo().uri)
+                        .queue();
                         play(channel.getGuild(), firstTrack);
 
 
@@ -134,13 +145,17 @@ public class YoutubeSearch extends ListenerAdapter {
 
         try {
             if (!musicManagers.scheduler.getQueue().isEmpty()) {
-                guild.getTextChannelsByName("music-room", true).get(0).sendMessage("**There's a song that's currently playing please wait for the next one**").queue();
+                guild.getTextChannelsByName("music-room", true).get(0).sendMessage("**")
+                        .append(track.getInfo().title)
+                        .append("** Currently Playing")
+                        .append(" wait for your song to be played by jesus ")
+                        .queue();
             } else {
                 guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: **")
                         .append(track.getInfo().title)
                         .append("** by ** ")
                         .append(track.getInfo().title + " ")
-                        .append((double)track.getInfo().length/60000 + " :stop:watch**")
+                        .append(TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length)+ " :stop:watch**")
                         .queue();
                 musicManagers.scheduler.queue(track);
             }
@@ -153,43 +168,63 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private void skipTrack(TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
-
-        musicManagers.scheduler.stopTrack();
-
-        channel.sendMessage(":track_next: Track.").queue();
+        if (!musicManagers.player.isPaused()) {
+            musicManagers.scheduler.stopTrack();
+            channel.sendMessage(":track_next: Track.").queue();
+        } else if (musicManagers.scheduler.getQueue().isEmpty()) {
+            channel.sendMessage("No track is playing for jesus to skip").queue();
+        }
     }
 
     private void pauseTrack (TextChannel channel){
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
+        if (musicManagers.player.isPaused()) {
+            musicManagers.scheduler.pauseTrack();
+            channel.sendMessage(":pause_button: current track").queue();
+        } else if (musicManagers.scheduler.getQueue().isEmpty()) {
+            channel.sendMessage("No track is playing for jesus to :pause_button:").queue();
+        } else {
+            channel.sendMessage("Track is currently :pause_button: by jesus.").queue();
+        }
 
-        musicManagers.scheduler.pauseTrack();
-
-        channel.sendMessage(":pause_button: current track").queue();
     }
     private void resumeTrack (TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
+        if (musicManagers.player.isPaused()) {
+            musicManagers.scheduler.resumeTrack();
+            channel.sendMessage(":play_pause: paused track").queue();
+        } else if (musicManagers.scheduler.getQueue().isEmpty()) {
+            channel.sendMessage("No track is playing for jesus to resume").queue();
+        } else  {
+            channel.sendMessage("Track is currently playing by jesus.").queue();
+        }
 
-        musicManagers.scheduler.resumeTrack();
-
-        channel.sendMessage(":play_pause: paused track").queue();
 
     }
     private void stopTrack (TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
+        if (!musicManagers.scheduler.getQueue().isEmpty()) {
+            musicManagers.scheduler.stopTrack();
+            channel.sendMessage(":stop_button: current track").queue();
+        } else {
+            channel.sendMessage("No track is playing for jesus to :stop_button:").queue();
+        }
 
-        musicManagers.scheduler.stopTrack();
-
-        channel.sendMessage(":stop_button: current track").queue();
 
     }
 
 
     private void stopMusic (TextChannel channel, AudioManager manager) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
-        musicManagers.scheduler.stopTrack();
-        manager.closeAudioConnection();
 
-        channel.sendMessage("**Music** :octagonal_sign:").queue();
+        if (!musicManagers.scheduler.getQueue().isEmpty()) {
+            musicManagers.scheduler.stopTrack();
+            manager.closeAudioConnection();
+            channel.sendMessage("**Music** :octagonal_sign:").queue();
+        } else {
+            channel.sendMessage("No track is playing for jesus to :octagonal_sign:").queue();
+        }
+
 
     }
 
@@ -212,10 +247,20 @@ public class YoutubeSearch extends ListenerAdapter {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
 
         AudioTrackInfo trackInfo = musicManagers.scheduler.getPlayingTrack().getInfo();
-        channel.sendMessage("Current Playing Track is  :notes: **" + musicManagers.scheduler.getPlayingTrack()
-        .getInfo().title + "** by **" + trackInfo.title + " by "+ musicManagers.scheduler.getPlayingTrack().getInfo() +
-                musicManagers.scheduler.getPlayingTrack().getDuration()/60000 + " Long**").queue();
-        channel.sendMessage("Current Playing Track is  :notes: **");
+        if (!musicManagers.scheduler.getQueue().isEmpty()) {
+            channel.sendMessage("Current Playing Track is  :notes: **" + musicManagers.scheduler.getPlayingTrack()
+                    .getInfo().title + "** by **" + trackInfo.title + " by " + musicManagers.scheduler.getPlayingTrack().getInfo() +
+                    musicManagers.scheduler.getPlayingTrack().getDuration() / 60000 + " Long**").queue();
+            channel.sendMessage("Current Playing Track is  :notes: **")
+                .append(trackInfo.title)
+                .append("** by **")
+                .append(trackInfo.author)
+                .append(" ")
+                .append(TimeUnit.MILLISECONDS.toMinutes(trackInfo.length) + " :stopwatch:**")
+                .queue();
+        } else {
+            channel.sendMessage("No track to display information").queue();
+        }
     }
 
     private void setRepeat (TextChannel channel, boolean repeat) {
@@ -236,14 +281,14 @@ public class YoutubeSearch extends ListenerAdapter {
         int count = 0;
         for (AudioTrack tracks : queue) {
             if (count < 10) {
-                response.append("Place: " + tracks.getPosition())
+                response.append("```Place: " + tracks.getPosition())
                         .append("\nTitle: " + tracks.getInfo().title)
                         .append("\nAuthor: " + tracks.getInfo().author)
-                        .append("\nLength: " + tracks.getInfo().length);
+                        .append("\nLength: " + tracks.getInfo().length + "```");
                 count++;
             }
-            channel.sendMessage(response.toString()).queue();
         }
+        channel.sendMessage(response.toString()).queue();
 
 
     }
