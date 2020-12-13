@@ -27,7 +27,7 @@ public class MemberQualifyForRole extends ListenerAdapter {
         } else if ("!role".equals(message[0]) && "add".equals(message[1]) && event.getChannel().equals(channelName)
                 && (Objects.requireNonNull(event.getMember()).getRoles().contains(event.getGuild().getRoleById(moderatorId)) || event.getMember().isOwner())) {
             event.getGuild().addRoleToMember(event.getMessage().getMentionedMembers().get(0), roleAssign).queue();
-            event.getChannel().sendMessage("Congratulations " + event.getMessage().getMentionedMembers().get(0) + ",You are now a ***" + message[message.length-1].toUpperCase() + "***")
+            event.getChannel().sendMessage("Congratulations " + event.getMessage().getMentionedMembers().get(0).getAsMention() + ",You are now a ***" + message[message.length-1].toUpperCase() + "***")
                     .queue();
         } else if ("!role".equals(message[0]) && "remove".equals(message[1]) && event.getChannel().equals(channelName)
                 && (Objects.requireNonNull(event.getMember()).getRoles().contains(event.getGuild().getRoleById(moderatorId)) || event.getMember().isOwner())   ) {

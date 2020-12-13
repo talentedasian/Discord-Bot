@@ -21,19 +21,18 @@ public class MoveMember extends ListenerAdapter {
                 if (!event.getMember().getVoiceState().inVoiceChannel()) {
                     event.getChannel().sendMessage("**CONNECT** to a voice channel first").queue();
                 }
-        } else if ("!move".equals(message[0]) && event.getMember().getRoles().contains(event.getGuild().getRolesByName("moderator", true).get(0))) {
+        } else if ("!mute".equals(message[0]) && event.getMember().getRoles().contains(event.getGuild().getRolesByName("moderator", true).get(0))) {
                 if (event.getMessage().getMentionedMembers().get(0).getVoiceState().isMuted()) {
-                    event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + ":mute: already").queue();
-                } else if (event.getMessage().getMentionedMembers().get(0).getVoiceState().inVoiceChannel()) {
+                    event.getGuild().mute(event.getMessage().getMentionedMembers().get(0), true).queue();
+                } else if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().inVoiceChannel()) {
                     event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + "Not Yet in Voice Channel").queue();
                 } else {
-                    event.getChannel().sendMessage( event.getMessage().getMentionedMembers().get(0).getAsMention() + ":mute:").queue();
+                    event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + ":mute: already").queue();
+                    event.getChannel().sendMessage(":mute:")
+                            .append(event.getMessage().getMentionedMembers().get(0) + " reason: ")
+                            .append(message[message.length - 1])
+                            .queue();
                 }
-        }
-
-        if ("!mute".equals(message[0]) && !event.getMessage().getMentionedMembers().get(0).getVoiceState().inVoiceChannel()) {
-            event.getGuild().mute(event.getMessage().getMentionedMembers().get(0),true);
-            event.getChannel().sendMessage(":mute: " + event.getMessage().getMentionedMembers().get(0) + " reason: " + message[message.length-1]).queue();
         }
     }
 }

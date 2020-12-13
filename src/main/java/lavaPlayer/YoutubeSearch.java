@@ -14,8 +14,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -82,7 +81,7 @@ public class YoutubeSearch extends ListenerAdapter {
             setRepeat(event.getChannel(), true);
         } else if (command[0].startsWith("~") && !supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))){
             event.getChannel().sendMessage(":do_not_litter::exclamation: Go to " + event.getGuild().getTextChannelsByName("music-room",true).get(0).getAsMention()).queue();
-        } else if ("~queue".equals(command[0]) && "contents".equals(command[1]) && !supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
+        } else if ("~queue".equals(command[0]) && "contents".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
             sendQueue(event.getChannel());
         }
 
@@ -135,9 +134,14 @@ public class YoutubeSearch extends ListenerAdapter {
 
         try {
             if (!musicManagers.scheduler.getQueue().isEmpty()) {
-                guild.getTextChannelsByName("music-room", true).get(0).sendMessage("There's a song that's currently playing").queue();
+                guild.getTextChannelsByName("music-room", true).get(0).sendMessage("**There's a song that's currently playing please wait for the next one**").queue();
             } else {
-                guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: **" + track.getInfo().title + "** by ** :stopwatch:" + track.getInfo().title + "  " + ((double) track.getInfo().length) / 60000 + "**").queue();
+                guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: **")
+                        .append(track.getInfo().title)
+                        .append("** by ** ")
+                        .append(track.getInfo().title + " ")
+                        .append((double)track.getInfo().length/60000 + " :stop:watch**")
+                        .queue();
                 musicManagers.scheduler.queue(track);
             }
         } catch (InterruptedException e) {
@@ -209,7 +213,9 @@ public class YoutubeSearch extends ListenerAdapter {
 
         AudioTrackInfo trackInfo = musicManagers.scheduler.getPlayingTrack().getInfo();
         channel.sendMessage("Current Playing Track is  :notes: **" + musicManagers.scheduler.getPlayingTrack()
-        .getInfo().title + "** by **" + trackInfo.title + " by "+ musicManagers.scheduler.getPlayingTrack().getInfo() + musicManagers.scheduler.getPlayingTrack().getDuration()/60000 + " Long**").queue();
+        .getInfo().title + "** by **" + trackInfo.title + " by "+ musicManagers.scheduler.getPlayingTrack().getInfo() +
+                musicManagers.scheduler.getPlayingTrack().getDuration()/60000 + " Long**").queue();
+        channel.sendMessage("Current Playing Track is  :notes: **");
     }
 
     private void setRepeat (TextChannel channel, boolean repeat) {
@@ -225,21 +231,21 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private void sendQueue (TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        BlockingQueue<AudioTrack> queue = musicManager.scheduler.getQueue();
-        StringBuilder builder = new StringBuilder();
+        Queue<AudioTrack> queue = musicManager.scheduler.getQueue();
+        StringBuilder response = new StringBuilder();
         int count = 0;
         for (AudioTrack tracks : queue) {
             if (count < 10) {
-                builder.append("Place: " + tracks.getPosition())
-                        .append("Title: " + tracks.getInfo().title)
-                        .append("Author: " + tracks.getInfo().author)
-                        .append("Length: " + tracks.getInfo().length)
-                        .append("State: " +  tracks.getState())
-                        .append("User Date" + tracks.getUserData());
-               count++;
+                response.append("Place: " + tracks.getPosition())
+                        .append("\nTitle: " + tracks.getInfo().title)
+                        .append("\nAuthor: " + tracks.getInfo().author)
+                        .append("\nLength: " + tracks.getInfo().length);
+                count++;
             }
+            channel.sendMessage(response.toString()).queue();
         }
-        channel.sendMessage(builder.toString()).queue();
+
+
     }
 
 
