@@ -168,10 +168,11 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private void skipTrack(TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
-        if (!musicManagers.player.isPaused()) {
+
+        if (musicManagers.scheduler.getQueue().isEmpty()) {
             musicManagers.scheduler.stopTrack();
             channel.sendMessage(":track_next: Track.").queue();
-        } else if (musicManagers.scheduler.getQueue().isEmpty()) {
+        } else {
             channel.sendMessage("No track is playing for jesus to skip").queue();
         }
     }
@@ -195,7 +196,7 @@ public class YoutubeSearch extends ListenerAdapter {
             channel.sendMessage(":play_pause: paused track").queue();
         } else if (musicManagers.scheduler.getQueue().isEmpty()) {
             channel.sendMessage("No track is playing for jesus to resume").queue();
-        } else  {
+        } else if (!musicManagers.player.isPaused()) {
             channel.sendMessage("Track is currently playing by jesus.").queue();
         }
 
@@ -258,7 +259,7 @@ public class YoutubeSearch extends ListenerAdapter {
                 .append(" ")
                 .append(TimeUnit.MILLISECONDS.toMinutes(trackInfo.length) + " :stopwatch:**")
                 .queue();
-        } else {
+        } else if (musicManagers.scheduler.getQueue().isEmpty()) {
             channel.sendMessage("No track to display information").queue();
         }
     }
