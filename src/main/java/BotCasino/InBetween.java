@@ -33,6 +33,7 @@ public class InBetween extends ListenerAdapter {
         int random2 = new Random().nextInt(13);
         int random3 = new Random().nextInt(13);
 
+        String[] weatherMessage = event.getMessage().getContentRaw().split(" ", 2);
         if ("!in".equals(message[0]) && "between".equals(message[1])) {
             event.getChannel().sendMessage("Your Card is `" + random1 + "`").queue();
             event.getChannel().sendMessage("The Random Card Drawn is `" + random2 + " and " + random3 + "`").queue();
@@ -40,12 +41,12 @@ public class InBetween extends ListenerAdapter {
                     (random1 < random2 && random1 > random3 || random1 > random2 && random1 < random3)) {
                 event.getChannel().sendMessage("You Lost!").queue();
 
-            } else {
+            } else if ((random1 > random2 && random1 < random3)) {
                 event.getChannel().sendMessage("Congratulations You Won!");
             }
         }
 
-            if ("!weather".equals(message[0])) {
+            if ("!weather".equals(weatherMessage[0])) {
                 event.getChannel().sendMessage("wait for response").queue();
             try {
 
@@ -53,7 +54,7 @@ public class InBetween extends ListenerAdapter {
                 OkHttpClient client = new OkHttpClient();
 
                 Request request = new Request.Builder()
-                        .url("http://api.openweathermap.org/data/2.5/weather?q=" + message[1] + "&appid=" + apiKey)
+                        .url("http://api.openweathermap.org/data/2.5/weather?q=" + weatherMessage[1] + "&appid=" + apiKey)
                         .build(); // defaults to GET
 
                 Response response = client.newCall(request).execute();

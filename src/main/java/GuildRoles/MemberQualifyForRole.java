@@ -40,10 +40,9 @@ public class MemberQualifyForRole extends ListenerAdapter {
                         (event.getGuild().getMemberById(m.getIdLong()), event.getMessage().getMentionedRoles()));
         }
         else if (message[0].equalsIgnoreCase("!role")  && !event.getChannel().equals(channelName)) {
-            event.getChannel().sendMessage("Please Go To The Correct Room For this Message")
+            event.getChannel().sendMessage("***Please Go To The Correct Room For this Message***")
                     .queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
             event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
-
         }
 
     }
