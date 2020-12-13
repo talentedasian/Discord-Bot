@@ -22,16 +22,16 @@ public class MoveMember extends ListenerAdapter {
                     event.getChannel().sendMessage("**CONNECT** to a voice channel first").queue();
                 }
         } else if ("!mute".equals(message[0]) && event.getMember().getRoles().contains(event.getGuild().getRolesByName("moderator", true).get(0))) {
-                if (event.getMessage().getMentionedMembers().get(0).getVoiceState().isMuted()) {
+                if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().isMuted()) {
                     event.getGuild().mute(event.getMessage().getMentionedMembers().get(0), true).queue();
-                } else if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().inVoiceChannel()) {
-                    event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + "Not Yet in Voice Channel").queue();
-                } else {
-                    event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + ":mute: already").queue();
                     event.getChannel().sendMessage(":mute:")
                             .append(event.getMessage().getMentionedMembers().get(0) + " reason: ")
                             .append(message[message.length - 1])
                             .queue();
+                } else if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().inVoiceChannel()) {
+                    event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + "Not Yet in Voice Channel").queue();
+                } else {
+                    event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + ":mute: already").queue();
                 }
         }
     }
