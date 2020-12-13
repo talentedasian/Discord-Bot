@@ -25,7 +25,8 @@ public class MassChurch extends ListenerAdapter {
             youtubeSearch.loadAndPlay(event.getChannel(), "ytsearch:" + messages[3]);
             setMass(event.getChannel(),  true);
             event.getChannel().sendMessage(":pray: :prayer_beads: **PRAYER TAYO NA NGAYON SA :church: TANG INA WAG MAINGAY**").queue();
-        } else if (supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && youtubeSearch.getGuildMusicManager(event.getGuild()).scheduler.isMass()) {
+        } else if (supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && youtubeSearch.getGuildMusicManager(event.getGuild()).scheduler.isMass()
+                && !event.getMember().isOwner() && event.getAuthor().isBot()) {
             event.getChannel().sendMessage("**BAWAS POINTS KA SA :church: :cloud:** " +  event.getMember().getAsMention()).queue();
         }
     }
