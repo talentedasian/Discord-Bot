@@ -20,17 +20,11 @@ public class MoveMember extends ListenerAdapter {
         long voiceChannelId = event.getGuild().getVoiceChannelsByName(moveMessage[2],true).get(0).getIdLong();
         long memberId = event.getMember().getIdLong();
 
-
-        Member memberToBeMoved = event.getMember();
         if ("!move".equals(moveMessage[0]) && "voice".equals(moveMessage[1])) {
-            try {
-                assert memberToBeMoved != null;
                 event.getGuild().moveVoiceMember(event.getGuild().getMemberById(memberId), event.getGuild().getVoiceChannelById(voiceChannelId)).queue();
                 event.getChannel().sendMessage("IF YOU ARE NOT MOVED TO A NEW VOICE CHANNEL, REPORT AN ISSUE TO `https://github.com/talentedasian/Discord-Bot or https://github.com/godsofheaven/Discord-Bot`")
                         .queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
-            } catch (IllegalStateException e) {
                 event.getChannel().sendMessage("`CONNECT` to a voice channel first").queue();
-            }
 
         }
     }

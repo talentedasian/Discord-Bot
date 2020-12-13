@@ -1,40 +1,121 @@
 package lavaPlayer;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class MassChurch extends ListenerAdapter {
+    private final DefaultAudioPlayerManager playerManager;
+    private final Map<Long, GuildMusicManager> musicManagers;
 
-    private final YoutubeSearch youtubeSearch = new YoutubeSearch();
+    private boolean mass;
 
-    public MassChurch() {
+    public boolean isMass() {
+        return mass;
     }
 
+    public void setMass(boolean mass) {
+        this.mass = mass;
+    }
+
+    public MassChurch() {
+        this.playerManager = new DefaultAudioPlayerManager();
+        playerManager.registerSourceManager(new YoutubeAudioSourceManager());
+        AudioSourceManagers.registerRemoteSources(playerManager);
+        AudioSourceManagers.registerLocalSource(playerManager);
+        musicManagers = new HashMap<>();
+    }
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         super.onGuildMessageReceived(event);
-        String[] messages = event.getMessage().getContentRaw().split(" ", 4);
-
+        String[] messages = event.getMessage().getContentRaw().split(" ", 2);
+        String[] massMessage = event.getMessage().getContentRaw().split(" ", 4);
         TextChannel supposedChannel = event.getChannel();
         if ("!masson".equals(messages[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
             setMass(event.getChannel(), true);
         } else if ("!massoff".equals(messages[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
             setMass(event.getChannel(), false);
-        } else if ("!homily".equals(messages[0]) && "tayo".equals(messages[1]) && "ngayon".equals(messages[2]) && messages.length == 4 && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
-            youtubeSearch.loadAndPlay(event.getChannel(), "ytsearch:" + messages[3]);
+        } else if ("!homily".equals(massMessage[0]) && "tayo".equals(massMessage[1]) && "ngayon".equals(massMessage[2]) && massMessage.length == 4
+                && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
+            loadAndPlay(event.getChannel(), "ytsearch:" + messages[1]);
             setMass(event.getChannel(),  true);
             event.getChannel().sendMessage(":pray: :prayer_beads: **PRAYER TAYO NA NGAYON SA :church: TANG INA WAG MAINGAY**").queue();
-        } else if (supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && youtubeSearch.getGuildMusicManager(event.getGuild()).scheduler.isMass()
-                && !event.getMember().isOwner() && event.getAuthor().isBot()) {
+        } else if (event.getMessage().getChannel().equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && isMass()
+                && !event.getMember().isOwner() && !event.getAuthor().isBot()) {
+            event.getMessage().delete();
             event.getChannel().sendMessage("**BAWAS POINTS KA SA :church: :cloud:** " +  event.getMember().getAsMention()).queue();
         }
     }
+    public void loadAndPlay(final TextChannel channel, final String trackUrl) {
+
+        playerManager.loadItemOrdered(getGuildAudioPlayer(channel.getGuild()), trackUrl, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                channel.sendMessage(":heavy_plus_sign: Mass Upcoming **" + track.getInfo().title + " ** by " + " **JESUS**").queue();
+
+                play(channel.getGuild(), track);
+
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                AudioTrack firstTrack = playlist.getSelectedTrack();
+
+                if (firstTrack == null) {
+                    firstTrack = playlist.getTracks().get(0);
+                }
+
+                channel.sendMessage(":heavy_plus_sign: To Queue " + firstTrack.getInfo().title +  firstTrack.getInfo().title + " by **" + firstTrack.getInfo().author + "**").queue();
+                play(channel.getGuild(), firstTrack);
+
+
+            }
+
+            @Override
+            public void noMatches() {
+                channel.sendMessage("Nothing found by " + trackUrl).queue();
+            }
+
+            @Override
+            public void loadFailed(FriendlyException exception) {
+                channel.sendMessage("Could not play: " + exception.getMessage()).queue();
+            }
+        });
+    }
+
+    private void play(Guild guild, AudioTrack track){
+        connectToFirstVoiceChannel(guild.getAudioManager());
+
+        GuildMusicManager musicManagers = getGuildAudioPlayer(guild);
+
+        guild.getTextChannelsByName("music-room",true).get(0).sendMessage("**DUMATING NA ANG PARI TUMAHIMIK NA TANG INA**").queue();
+
+        try {
+            musicManagers.scheduler.queue(track);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        musicManagers.scheduler.resumeTrack();
+
+    }
 
     private void setMass (TextChannel channel, boolean mass) {
-        GuildMusicManager musicManagers = youtubeSearch.getGuildMusicManager(channel.getGuild());
+        setMass(mass);
 
-        musicManagers.scheduler.setMass(mass);
         if (mass) {
             channel.sendMessage("BAWAL NA MAG-INGAY **TANG INA** MISA NA").queue();
         } else {
@@ -43,4 +124,25 @@ public class MassChurch extends ListenerAdapter {
         }
     }
 
+    private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
+        long guildId = guild.getIdLong();
+        GuildMusicManager musicManager = musicManagers.get(guildId);
+
+        if (musicManager == null) {
+            musicManager = new GuildMusicManager(playerManager);
+            musicManagers.put(guildId, musicManager);
+        }
+        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
+
+        return musicManager;
+    }
+
+    private static void connectToFirstVoiceChannel(AudioManager audioManager) {
+
+        if (!audioManager.isConnected()) {
+            long voiceId = audioManager.getGuild().getVoiceChannelsByName("Music Room",true).get(0).getIdLong();
+            VoiceChannel voiceChannel = audioManager.getGuild().getVoiceChannelById(voiceId);
+            audioManager.openAudioConnection(voiceChannel);
+        }
+    }
 }

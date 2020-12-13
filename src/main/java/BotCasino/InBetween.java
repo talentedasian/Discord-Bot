@@ -37,13 +37,11 @@ public class InBetween extends ListenerAdapter {
         if ("!in".equals(message[0]) && "between".equals(message[1])) {
             event.getChannel().sendMessage("Your Card is `" + random1 + "`").queue();
             event.getChannel().sendMessage("The Random Card Drawn is `" + random2 + " and " + random3 + "`").queue();
-            if (random1 == random2 || random1 == random3 ||
-                    (random1 < random2 && random1 > random3 || random1 > random2 && random1 < random3)) {
-                event.getChannel().sendMessage("You Lost!").queue();
-
-            } else if ((random1 > random2 && random1 < random3)) {
-                event.getChannel().sendMessage("Congratulations You Won!");
-            }
+             if ((random1 > random2 && random1 < random3) || (random1 < random2 && random1 > random3)) {
+                event.getChannel().sendMessage("SWERTE KA NGAYON ").queue();
+            } else {
+                 event.getChannel().sendMessage("MALAS").queue();
+             }
         }
 
             if ("!weather".equals(weatherMessage[0])) {

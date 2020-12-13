@@ -21,8 +21,8 @@ import java.util.concurrent.BlockingQueue;
 
 public class YoutubeSearch extends ListenerAdapter {
 
-    private final DefaultAudioPlayerManager playerManager;
-    private final Map<Long, GuildMusicManager> musicManagers;
+    private static DefaultAudioPlayerManager playerManager;
+    private static Map<Long, GuildMusicManager> musicManagers;
 
     public YoutubeSearch() {
         this.playerManager = new DefaultAudioPlayerManager();
@@ -33,7 +33,7 @@ public class YoutubeSearch extends ListenerAdapter {
     }
 
 
-    private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
+    private static synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
         long guildId = Long.parseLong(guild.getId());
         GuildMusicManager musicManager = musicManagers.get(guildId);
 
@@ -46,7 +46,7 @@ public class YoutubeSearch extends ListenerAdapter {
         return musicManager;
     }
 
-    synchronized GuildMusicManager getGuildMusicManager (Guild guild) {
+    static synchronized GuildMusicManager getGuildMusicManager(Guild guild) {
         return getGuildAudioPlayer(guild);
     }
 
@@ -86,17 +86,19 @@ public class YoutubeSearch extends ListenerAdapter {
             setRepeat(event.getChannel(), true);
         } else if (command[0].startsWith("~") && !supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))){
             event.getChannel().sendMessage(":do_not_litter::exclamation: Go to " + event.getGuild().getTextChannelsByName("music-room",true).get(0).getAsMention()).queue();
+        } else if ("~queue".equals(command[0]) && "contents".equals(command[1]) && !supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
+            sendQueue(event.getChannel());
         }
 
         super.onGuildMessageReceived(event);
               }
 
-    public void loadAndPlay(final TextChannel channel, final String trackUrl) {
+    public static void loadAndPlay(final TextChannel channel, final String trackUrl) {
 
         playerManager.loadItemOrdered(getGuildAudioPlayer(channel.getGuild()), trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage("Adding to queue " + track.getInfo().title).queue();
+                channel.sendMessage(":heavy_plus_sign: To Queue **" + track.getInfo().title + " ** by " + " **" + track.getInfo().author + "**").queue();
 
                     play(channel.getGuild(), track);
 
@@ -110,7 +112,7 @@ public class YoutubeSearch extends ListenerAdapter {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                channel.sendMessage("Adding to queue " + firstTrack.getInfo().title +  firstTrack.getInfo().title + "by " + firstTrack.getInfo().author).queue();
+                channel.sendMessage(":heavy_plus_sign: To Queue " + firstTrack.getInfo().title +  firstTrack.getInfo().title + " by **" + firstTrack.getInfo().author + "**").queue();
                         play(channel.getGuild(), firstTrack);
 
 
@@ -128,13 +130,19 @@ public class YoutubeSearch extends ListenerAdapter {
         });
     }
 
-    private void play(Guild guild, AudioTrack track){
+    private static void play(Guild guild, AudioTrack track){
         connectToFirstVoiceChannel(guild.getAudioManager());
-        guild.getTextChannelsByName("music-room",true).get(0).sendMessage("**Playing** :notes: " + track.getInfo().title + "by ").queue();
 
         GuildMusicManager musicManagers = getGuildAudioPlayer(guild);
+        guild.getTextChannelsByName("music-room",true).get(0).sendMessage(":notes: " + track.getInfo().title + "by " + track.getInfo().title + track.getInfo().length + " long").queue();
+
+        try {
             musicManagers.scheduler.queue(track);
-            musicManagers.scheduler.resumeTrack();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        musicManagers.scheduler.resumeTrack();
+
     }
 
     private void skipTrack(TextChannel channel) {
@@ -228,6 +236,7 @@ public class YoutubeSearch extends ListenerAdapter {
                count++;
             }
         }
+        channel.sendMessage(builder).queue();
     }
 
 

@@ -26,30 +26,6 @@ public class BotInfoCommand extends ListenerAdapter {
 						"Type the following commands to find out more", "`!bold` `\n!italic` `\n!underline` `\n!bolditalic` "
 								+ "`\n!underlineitalic` `\n!underlinebold` `\n!underlinebolditalic` `\n!strikethrough`",
 						true).build()).queue();
-
-				case "!voice"-> {
-					channel.sendMessage(embeds.texts(Color.BLACK, "Commands",
-							"Type the following commands",
-							"`!disconnect me - voice command to disconnect" +
-									"\n!move voice - move to a random voice channel \n!jesus (volume number) "  +
-									"\n!set (volume number)`",
-							false).build()).queue();
-				}
-
-				case "!miscellaneous"-> {
-					channel.sendMessage(embeds.texts(Color.BLACK, "Commands",
-							"Type the following commands",
-							"`!roll\n` `!8ball\n` `!time\n` `!gif\n`",
-							false).build()).queue();
-				}
-
-				case "!help"->{
-					channel.sendMessage(embeds.texts(Color.BLACK, "Commands",
-							"Type the following commands",
-							"`!markdown` `\n!miscellaneous` `\n!voice`",
-							false).build()).queue();
-				}
-
 				case "!bold" -> channel.sendMessage(embeds.textsEmbedMessage(Color.PINK,
 						"``` put '**' before and after your text```")
 				).queue(m -> m.delete().queueAfter(5, TimeUnit.SECONDS));
@@ -71,6 +47,25 @@ public class BotInfoCommand extends ListenerAdapter {
 				case "!underlinebolditalic" -> channel.sendMessage(embeds.textsEmbedMessage(Color.DARK_GRAY,
 						"```put  '__***' before and after your text```")
 				).queue(m -> m.delete().queueAfter(5, TimeUnit.SECONDS));
+
+
+				case "!voice"-> {
+					channel.sendMessage(embeds.texts(Color.BLACK, "Commands",
+							"Type the following commands",
+							"`!disconnect me - voice command to disconnect" +
+									"\n!move voice - move to a random voice channel " +
+									"\n!set (volume number)`",
+							false).build()).queue();
+				}
+				case "!help"->{
+					channel.sendMessage(embeds.texts(Color.BLACK, "Commands",
+							"Type the following commands",
+							"`!markdown` `\n!miscellaneous` `\n!voice`",
+							false).build()).queue();
+				}
+
+
+
 			}
 	}
 }	
