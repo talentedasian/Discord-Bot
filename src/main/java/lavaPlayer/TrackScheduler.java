@@ -20,9 +20,6 @@ public class TrackScheduler extends AudioEventAdapter {
         return mass;
     }
 
-    public void setMass(boolean mass) {
-        this.mass = mass;
-    }
 
 
     public BlockingQueue<AudioTrack> getQueue() {

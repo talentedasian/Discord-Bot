@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class MassChurch extends ListenerAdapter {
     private final DefaultAudioPlayerManager playerManager;
@@ -56,8 +57,8 @@ public class MassChurch extends ListenerAdapter {
             event.getChannel().sendMessage(":pray: :prayer_beads: **PRAYER TAYO NA NGAYON SA :church: TANG INA WAG MAINGAY**").queue();
         } else if (event.getMessage().getChannel().equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && isMass()
                 && !event.getMember().isOwner() && !event.getAuthor().isBot()) {
-            event.getMessage().delete();
-            event.getChannel().sendMessage("**BAWAS POINTS KA SA :church: :cloud:** " +  event.getMember().getAsMention()).queue();
+            event.getMessage().delete().queueAfter(4, TimeUnit.SECONDS);
+            event.getChannel().sendMessage("**BAWAS POINTS KA SA :church: :cloud:** " +  event.getMember().getAsMention() + "**NAGMIMISA TAYO EH TANG INA NAMAN OH**").queue();
         }
     }
     public void loadAndPlay(final TextChannel channel, final String trackUrl) {

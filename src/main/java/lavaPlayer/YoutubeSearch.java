@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -13,9 +14,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
@@ -33,7 +32,7 @@ public class YoutubeSearch extends ListenerAdapter {
     }
 
 
-    private static synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
+    private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
         long guildId = Long.parseLong(guild.getId());
         GuildMusicManager musicManager = musicManagers.get(guildId);
 
@@ -46,9 +45,6 @@ public class YoutubeSearch extends ListenerAdapter {
         return musicManager;
     }
 
-    static synchronized GuildMusicManager getGuildMusicManager(Guild guild) {
-        return getGuildAudioPlayer(guild);
-    }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
@@ -93,7 +89,7 @@ public class YoutubeSearch extends ListenerAdapter {
         super.onGuildMessageReceived(event);
               }
 
-    public static void loadAndPlay(final TextChannel channel, final String trackUrl) {
+    public void loadAndPlay(final TextChannel channel, final String trackUrl) {
 
         playerManager.loadItemOrdered(getGuildAudioPlayer(channel.getGuild()), trackUrl, new AudioLoadResultHandler() {
             @Override
@@ -130,18 +126,18 @@ public class YoutubeSearch extends ListenerAdapter {
         });
     }
 
-    private static void play(Guild guild, AudioTrack track){
+    private void play(Guild guild, AudioTrack track){
         connectToFirstVoiceChannel(guild.getAudioManager());
 
         GuildMusicManager musicManagers = getGuildAudioPlayer(guild);
 
 
         try {
-            if (musicManagers.scheduler.getQueue().isEmpty()) {
-                guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: " + track.getInfo().title + "by " + track.getInfo().title + " " + track.getInfo().length / 60000L + " long").queue();
-                musicManagers.scheduler.queue(track);
+            if (!musicManagers.scheduler.getQueue().isEmpty()) {
+                guild.getTextChannelsByName("music-room", true).get(0).sendMessage("There's a song that's currently playing").queue();
             } else {
-
+                guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: **" + track.getInfo().title + "** by **" + track.getInfo().title + "  " + track.getInfo().length / 60000L + "minutes long**").queue();
+                musicManagers.scheduler.queue(track);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -210,8 +206,9 @@ public class YoutubeSearch extends ListenerAdapter {
     private void getPlayingTrack (TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
 
-        channel.sendMessage("**Current Playing Track is**  :notes:" + musicManagers.scheduler.getPlayingTrack()
-        .getInfo().title + "by " + musicManagers.scheduler.getPlayingTrack().getInfo().title + "." + musicManagers.scheduler.getPlayingTrack().getInfo().length/60000 + " Remaining").queue();
+        AudioTrackInfo trackInfo = musicManagers.scheduler.getPlayingTrack().getInfo();
+        channel.sendMessage("Current Playing Track is  :notes: **" + musicManagers.scheduler.getPlayingTrack()
+        .getInfo().title + "** by **" + trackInfo.title + " by "+ musicManagers.scheduler.getPlayingTrack().getInfo() + musicManagers.scheduler.getPlayingTrack().getDuration()/60000 + " Long**").queue();
     }
 
     private void setRepeat (TextChannel channel, boolean repeat) {
@@ -241,11 +238,11 @@ public class YoutubeSearch extends ListenerAdapter {
                count++;
             }
         }
-        channel.sendMessage(builder).queue();
+        channel.sendMessage(builder.toString()).queue();
     }
 
 
-    private static void connectToFirstVoiceChannel(AudioManager audioManager) {
+    private void connectToFirstVoiceChannel(AudioManager audioManager) {
 
         if (!audioManager.isConnected()) {
             long voiceId = audioManager.getGuild().getVoiceChannelsByName("Music Room",true).get(0).getIdLong();
