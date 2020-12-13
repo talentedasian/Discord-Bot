@@ -47,15 +47,15 @@ public class MassChurch extends ListenerAdapter {
         String[] massMessage = event.getMessage().getContentRaw().split(" ", 4);
         TextChannel supposedChannel = event.getChannel();
         if ("!masson".equals(messages[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
-            setMass(event.getChannel(), true);
+            BooleanMass.settingMass(event.getChannel(),  true);
         } else if ("!massoff".equals(messages[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
-            setMass(event.getChannel(), false);
+            BooleanMass.settingMass(event.getChannel(), false);
         } else if ("!homily".equals(massMessage[0]) && "tayo".equals(massMessage[1]) && "ngayon".equals(massMessage[2]) && massMessage.length == 4
                 && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
             loadAndPlay(event.getChannel(), "ytsearch:" + messages[1]);
-            setMass(event.getChannel(),  true);
+            BooleanMass.settingMass(event.getChannel(),  true);
             event.getChannel().sendMessage(":pray: :prayer_beads: **PRAYER TAYO NA NGAYON SA :church: TANG INA WAG MAINGAY**").queue();
-        } else if (event.getMessage().getChannel().equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && isMass()
+        } else if (event.getMessage().getChannel().equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && BooleanMass.isMass()
                 && !event.getMember().isOwner() && !event.getAuthor().isBot()) {
             event.getMessage().delete().queueAfter(4, TimeUnit.SECONDS);
             event.getChannel().sendMessage("**BAWAS POINTS KA SA :church: :cloud:** " +  event.getMember().getAsMention() + "**NAGMIMISA TAYO EH TANG INA NAMAN OH**").queue();
@@ -80,7 +80,7 @@ public class MassChurch extends ListenerAdapter {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                channel.sendMessage(":heavy_plus_sign: To Queue " + firstTrack.getInfo().title +  firstTrack.getInfo().title + " by **" + firstTrack.getInfo().author + "**").queue();
+                channel.sendMessage("Adding To Queue " + firstTrack.getInfo().title +  firstTrack.getInfo().title + " by **" + firstTrack.getInfo().author + "**").queue();
                 play(channel.getGuild(), firstTrack);
 
 
@@ -112,17 +112,6 @@ public class MassChurch extends ListenerAdapter {
         }
         musicManagers.scheduler.resumeTrack();
 
-    }
-
-    private void setMass (TextChannel channel, boolean mass) {
-        setMass(mass);
-
-        if (mass) {
-            channel.sendMessage("BAWAL NA MAG-INGAY **TANG INA** MISA NA").queue();
-        } else {
-            channel.sendMessage("MAG INGAY NA TAPOS NA ANG MISA **TANG INA** NEXT WEEK NAMAN").queue();
-
-        }
     }
 
     private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {

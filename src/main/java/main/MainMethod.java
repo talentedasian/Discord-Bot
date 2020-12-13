@@ -42,7 +42,6 @@ public class MainMethod implements EventListener {
 				.setActivity(Activity.listening("Spotify"))
 				.setStatus(OnlineStatus.ONLINE)
 				.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS, CacheFlag.CLIENT_STATUS, CacheFlag.MEMBER_OVERRIDES)
-				.setChunkingFilter(ChunkingFilter.ALL)
 				.setAutoReconnect(true)
 				.addEventListeners(new MassChurch())
 				.addEventListeners(new InBetween())
