@@ -98,7 +98,7 @@ public class YoutubeSearch extends ListenerAdapter {
         playerManager.loadItemOrdered(getGuildAudioPlayer(channel.getGuild()), trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage(":heavy_plus_sign: To Queue **" + track.getInfo().title + " ** by " + " **" + track.getInfo().author + "**").queue();
+                channel.sendMessage("Adding To Queue **" + track.getInfo().title + " ** by " + " **" + track.getInfo().author + "**").queue();
 
                     play(channel.getGuild(), track);
 
@@ -112,7 +112,7 @@ public class YoutubeSearch extends ListenerAdapter {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                channel.sendMessage(":heavy_plus_sign: To Queue " + firstTrack.getInfo().title +  firstTrack.getInfo().title + " by **" + firstTrack.getInfo().author + "**").queue();
+                channel.sendMessage("Adding To Queue " + firstTrack.getInfo().title +  firstTrack.getInfo().title + " by **" + firstTrack.getInfo().author + "**").queue();
                         play(channel.getGuild(), firstTrack);
 
 
@@ -134,10 +134,15 @@ public class YoutubeSearch extends ListenerAdapter {
         connectToFirstVoiceChannel(guild.getAudioManager());
 
         GuildMusicManager musicManagers = getGuildAudioPlayer(guild);
-        guild.getTextChannelsByName("music-room",true).get(0).sendMessage(":notes: " + track.getInfo().title + "by " + track.getInfo().title + track.getInfo().length + " long").queue();
+
 
         try {
-            musicManagers.scheduler.queue(track);
+            if (musicManagers.scheduler.getQueue().isEmpty()) {
+                guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: " + track.getInfo().title + "by " + track.getInfo().title + " " + track.getInfo().length / 60000L + " long").queue();
+                musicManagers.scheduler.queue(track);
+            } else {
+
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

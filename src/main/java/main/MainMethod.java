@@ -10,14 +10,10 @@ import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import lavaPlayer.MassChurch;
 import lavaPlayer.YoutubeSearch;
 import botCommands.botProfanityFilter.ProfanityFilter;
-import embedBuilders.EmbedCommands;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -27,8 +23,6 @@ import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventListener;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class MainMethod implements EventListener {
