@@ -72,7 +72,7 @@ public class BotInfoCommand extends ListenerAdapter {
 							"```~playyt - play music from youtube \n~playsc - play music from spotify \n~set **volume number** - set the volume of the music bot (**please do not abuse this command**)"
 							+ "~volume - get the current volume of the music bot \n~playing track - get info about the current playing track"
 							+ "\n~queue contents - list all tracks from queue \n~repeat **on or off** - turn on or off repeat \n~stop **music or track** - stops the music or track(if music is stopped, bot is disconnect from voice channel"
-							+ "\n~resume - resume the currently paused track \n~pause - pause the currently playing track",
+							+ "\n~resume - resume the currently paused track \n~pause - pause the currently playing track```",
 							false).build()).queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
 
 				}

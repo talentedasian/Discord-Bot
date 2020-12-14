@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -247,7 +248,7 @@ public class YoutubeSearch extends ListenerAdapter {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
 
         AudioTrackInfo trackInfo = musicManagers.scheduler.getPlayingTrack().getInfo();
-        if (!musicManagers.scheduler.getQueue().isEmpty()) {
+        if (musicManagers.scheduler.getPlayingTrack().getState().equals(AudioTrackState.PLAYING)) {
             channel.sendMessage("Current Playing Track is  :notes: **")
                 .append(trackInfo.title)
                 .append("** by **")
