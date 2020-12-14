@@ -15,13 +15,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class YoutubeSearch extends ListenerAdapter {
 
-    private static DefaultAudioPlayerManager playerManager;
-    private static Map<Long, GuildMusicManager> musicManagers;
+    private final DefaultAudioPlayerManager playerManager;
+    private final Map<Long, GuildMusicManager> musicManagers;
 
     public YoutubeSearch() {
         this.playerManager = new DefaultAudioPlayerManager();
@@ -49,7 +48,6 @@ public class YoutubeSearch extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String[] command = event.getMessage().getContentRaw().split(" ", 2);
-        Guild guild = event.getGuild();
         TextChannel supposedChannel = event.getMessage().getTextChannel();
 
 
@@ -94,12 +92,13 @@ public class YoutubeSearch extends ListenerAdapter {
         playerManager.loadItemOrdered(getGuildAudioPlayer(channel.getGuild()), trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage("Jesus Adding")
+                channel.sendMessage("Jesus Adding **")
                         .append(track.getInfo().title)
                         .append(" ** by ")
                         .append(track.getInfo().author)
-                        .append(" " + TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length))
-                        .append(" and in case you want to search it up on youtube " + track.getInfo().uri)
+                        .append("** :stopwatch:" + TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length))
+                        .append(" and in case you want to search it up on youtube ")
+                        .append(track.getInfo().uri + "**")
                         .queue();
                     play(channel.getGuild(), track);
 
@@ -113,12 +112,13 @@ public class YoutubeSearch extends ListenerAdapter {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                channel.sendMessage("Jesus Adding")
+                channel.sendMessage("Jesus Adding **")
                         .append(firstTrack.getInfo().title)
-                        .append(" ** by ")
+                        .append(" ** by **")
                         .append(firstTrack.getInfo().author)
-                        .append(" " + TimeUnit.MILLISECONDS.toMinutes(firstTrack.getInfo().length))
-                        .append(" and in case you want to search it up on youtube " + firstTrack.getInfo().uri)
+                        .append("** :stopwatch:" + TimeUnit.MILLISECONDS.toMinutes(firstTrack.getInfo().length))
+                        .append(" and in case you want to search it up on youtube ")
+                        .append(firstTrack.getInfo().uri + "**")
                         .queue();
                         play(channel.getGuild(), firstTrack);
 
@@ -142,26 +142,22 @@ public class YoutubeSearch extends ListenerAdapter {
 
         GuildMusicManager musicManagers = getGuildAudioPlayer(guild);
 
-
-        try {
             if (!musicManagers.scheduler.getQueue().isEmpty()) {
                 guild.getTextChannelsByName("music-room", true).get(0).sendMessage("**")
-                        .append(track.getInfo().title)
-                        .append("** Currently Playing")
+                        .append(musicManagers.scheduler.getPlayingTrack().getInfo().title)
+                        .append("** is Currently Playing")
                         .append(" wait for your song to be played by jesus ")
                         .queue();
             } else {
                 guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: **")
-                        .append(track.getInfo().title)
+                        .append(musicManagers.scheduler.getPlayingTrack().getInfo().title)
                         .append("** by ** ")
-                        .append(track.getInfo().title + " ")
-                        .append(TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length)+ " :stop:watch**")
+                        .append(musicManagers.scheduler.getPlayingTrack().getInfo().author + " ")
+                        .append(TimeUnit.MILLISECONDS.toMinutes(musicManagers.scheduler.getPlayingTrack().getInfo().length)+ " :stopwatch:**")
                         .queue();
                 musicManagers.scheduler.queue(track);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         musicManagers.scheduler.resumeTrack();
 
     }
@@ -169,7 +165,7 @@ public class YoutubeSearch extends ListenerAdapter {
     private void skipTrack(TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
 
-        if (musicManagers.scheduler.getQueue().isEmpty()) {
+        if (!musicManagers.scheduler.getQueue().isEmpty()) {
             musicManagers.scheduler.stopTrack();
             channel.sendMessage(":track_next: Track.").queue();
         } else {
@@ -179,7 +175,7 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private void pauseTrack (TextChannel channel){
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
-        if (musicManagers.player.isPaused()) {
+        if (!musicManagers.player.isPaused()) {
             musicManagers.scheduler.pauseTrack();
             channel.sendMessage(":pause_button: current track").queue();
         } else if (musicManagers.scheduler.getQueue().isEmpty()) {
@@ -196,7 +192,7 @@ public class YoutubeSearch extends ListenerAdapter {
             channel.sendMessage(":play_pause: paused track").queue();
         } else if (musicManagers.scheduler.getQueue().isEmpty()) {
             channel.sendMessage("No track is playing for jesus to resume").queue();
-        } else if (!musicManagers.player.isPaused()) {
+        } else {
             channel.sendMessage("Track is currently playing by jesus.").queue();
         }
 
@@ -249,9 +245,6 @@ public class YoutubeSearch extends ListenerAdapter {
 
         AudioTrackInfo trackInfo = musicManagers.scheduler.getPlayingTrack().getInfo();
         if (!musicManagers.scheduler.getQueue().isEmpty()) {
-            channel.sendMessage("Current Playing Track is  :notes: **" + musicManagers.scheduler.getPlayingTrack()
-                    .getInfo().title + "** by **" + trackInfo.title + " by " + musicManagers.scheduler.getPlayingTrack().getInfo() +
-                    musicManagers.scheduler.getPlayingTrack().getDuration() / 60000 + " Long**").queue();
             channel.sendMessage("Current Playing Track is  :notes: **")
                 .append(trackInfo.title)
                 .append("** by **")
@@ -259,7 +252,7 @@ public class YoutubeSearch extends ListenerAdapter {
                 .append(" ")
                 .append(TimeUnit.MILLISECONDS.toMinutes(trackInfo.length) + " :stopwatch:**")
                 .queue();
-        } else if (musicManagers.scheduler.getQueue().isEmpty()) {
+        } else  {
             channel.sendMessage("No track to display information").queue();
         }
     }
@@ -280,16 +273,18 @@ public class YoutubeSearch extends ListenerAdapter {
         Queue<AudioTrack> queue = musicManager.scheduler.getQueue();
         StringBuilder response = new StringBuilder();
         int count = 0;
-        for (AudioTrack tracks : queue) {
-            if (count < 10) {
-                response.append("```Place: " + tracks.getPosition())
-                        .append("\nTitle: " + tracks.getInfo().title)
-                        .append("\nAuthor: " + tracks.getInfo().author)
-                        .append("\nLength: " + tracks.getInfo().length + "```");
-                count++;
+        synchronized (queue) {
+            for (AudioTrack tracks : queue) {
+                if (count < 10) {
+                    response.append("```Place: " + tracks.getPosition())
+                            .append("\nTitle: " + tracks.getInfo().title)
+                            .append("\nAuthor: " + tracks.getInfo().author)
+                            .append("\nLength: " + tracks.getInfo().length + "```");
+                    count++;
+                }
             }
+            channel.sendMessage(response.toString()).queue();
         }
-        channel.sendMessage(response.toString()).queue();
 
 
     }

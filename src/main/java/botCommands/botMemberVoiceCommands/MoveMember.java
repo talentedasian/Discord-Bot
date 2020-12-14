@@ -1,6 +1,5 @@
 package botCommands.botMemberVoiceCommands;
 
-import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +24,7 @@ public class MoveMember extends ListenerAdapter {
                 if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().isMuted()) {
                     event.getGuild().mute(event.getMessage().getMentionedMembers().get(0), true).queue();
                     event.getChannel().sendMessage(":mute:")
-                            .append(event.getMessage().getMentionedMembers().get(0) + " reason: ")
+                            .append(event.getMessage().getMentionedMembers().get(0).getAsMention() + " reason: ")
                             .append(message[message.length - 1])
                             .queue();
                 } else if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().inVoiceChannel()) {
