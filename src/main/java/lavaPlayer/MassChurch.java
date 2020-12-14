@@ -105,11 +105,8 @@ public class MassChurch extends ListenerAdapter {
 
         guild.getTextChannelsByName("music-room",true).get(0).sendMessage("**DUMATING NA ANG PARI TUMAHIMIK NA TANG INA**").queue();
 
-        try {
             musicManagers.scheduler.queue(track);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         musicManagers.scheduler.resumeTrack();
 
     }
