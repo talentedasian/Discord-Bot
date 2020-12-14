@@ -53,34 +53,34 @@ public class YoutubeSearch extends ListenerAdapter {
 
 
         if ("~playyt".equals(command[0]) && command.length == 2 && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              loadAndPlay(event.getChannel(), "ytsearch: " + command[1]);
-              event.getChannel().sendMessage("**Jesus Searching** :mag_right: for " + command[1]).queue();
+                loadAndPlay(event.getChannel(), "ytsearch: " + command[1]);
+                event.getChannel().sendMessage("**Jesus Searching** :mag_right: for " + command[1]).queue();
         } else if ("~playsc".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              loadAndPlay(event.getChannel(), "scsearch: " + command[1]);
+                loadAndPlay(event.getChannel(), "scsearch: " + command[1]);
         } else if ("~skip".equals(command[0])  && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
                 skipTrack(event.getChannel());
         } else if ("~pause".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
                 pauseTrack(event.getChannel());
         } else if ("~resume".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-            resumeTrack(event.getChannel());
+                resumeTrack(event.getChannel());
         } else if ("~stop".equals(command[0]) && "music".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
                 stopMusic(event.getChannel(), event.getGuild().getAudioManager());
         } else if ("~stop".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-            stopTrack(event.getChannel());
+                stopTrack(event.getChannel());
         } else if ("~set".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              setVolume(event.getChannel(), Integer.parseInt(command[1]));
+                setVolume(event.getChannel(), Integer.parseInt(command[1]));
         } else if ("~volume".equals(command[0]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              getVolume(event.getChannel());
+                getVolume(event.getChannel());
         } else if ("~playing".equals(command[0]) && "track".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-            getPlayingTrack(event.getChannel());
+                getPlayingTrack(event.getChannel());
         } else if ("~repeat".equals(command[0]) && "off".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-              setRepeat(event.getChannel(), false);
+                setRepeat(event.getChannel(), false);
         } else if ("~repeat".equals(command[0]) && "on".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && !BooleanMass.isMass()) {
-            setRepeat(event.getChannel(), true);
+                setRepeat(event.getChannel(), true);
         } else if (command[0].startsWith("~") && !supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))){
-            event.getChannel().sendMessage(":do_not_litter::exclamation: Go to " + event.getGuild().getTextChannelsByName("music-room",true).get(0).getAsMention()).queue();
+                event.getChannel().sendMessage(":do_not_litter::exclamation: Go to " + event.getGuild().getTextChannelsByName("music-room",true).get(0).getAsMention()).queue();
         } else if ("~queue".equals(command[0]) && "contents".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
-            sendQueue(event.getChannel());
+                sendQueue(event.getChannel());
         }
 
 
@@ -90,6 +90,8 @@ public class YoutubeSearch extends ListenerAdapter {
     public void loadAndPlay(final TextChannel channel, final String trackUrl) {
 
         playerManager.loadItemOrdered(getGuildAudioPlayer(channel.getGuild()), trackUrl, new AudioLoadResultHandler() {
+
+
             @Override
             public void trackLoaded(AudioTrack track) {
                 channel.sendMessage("Jesus Adding **")
@@ -103,6 +105,7 @@ public class YoutubeSearch extends ListenerAdapter {
                     play(channel.getGuild(), track);
 
             }
+
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
@@ -141,24 +144,24 @@ public class YoutubeSearch extends ListenerAdapter {
         connectToFirstVoiceChannel(guild.getAudioManager());
 
         GuildMusicManager musicManagers = getGuildAudioPlayer(guild);
+       musicManagers.scheduler.queue(track);
 
-            if (!musicManagers.scheduler.getQueue().isEmpty()) {
+        if (musicManagers.scheduler.getQueue().isEmpty()) {
+                guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: **")
+                        .append(track.getInfo().title)
+                        .append("** by ** ")
+                        .append(track.getInfo().author + " ")
+                        .append(TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length) + " :stopwatch:**")
+                        .queue();
+            } else if (!musicManagers.scheduler.getQueue().isEmpty()) {
                 guild.getTextChannelsByName("music-room", true).get(0).sendMessage("**")
                         .append(musicManagers.scheduler.getPlayingTrack().getInfo().title)
                         .append("** is Currently Playing")
                         .append(" wait for your song to be played by jesus ")
                         .queue();
-            } else {
-                guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: **")
-                        .append(musicManagers.scheduler.getPlayingTrack().getInfo().title)
-                        .append("** by ** ")
-                        .append(musicManagers.scheduler.getPlayingTrack().getInfo().author + " ")
-                        .append(TimeUnit.MILLISECONDS.toMinutes(musicManagers.scheduler.getPlayingTrack().getInfo().length)+ " :stopwatch:**")
-                        .queue();
-                musicManagers.scheduler.queue(track);
             }
 
-        musicManagers.scheduler.resumeTrack();
+            musicManagers.scheduler.resumeTrack();
 
     }
 
@@ -279,12 +282,12 @@ public class YoutubeSearch extends ListenerAdapter {
                     response.append("```Place: " + tracks.getPosition())
                             .append("\nTitle: " + tracks.getInfo().title)
                             .append("\nAuthor: " + tracks.getInfo().author)
-                            .append("\nLength: " + tracks.getInfo().length + "```");
+                            .append("\nLength: " + tracks.getInfo().length + " Minutes```");
                     count++;
                 }
             }
-            channel.sendMessage(response.toString()).queue();
         }
+        channel.sendMessage(response.toString()).queue();
 
 
     }
