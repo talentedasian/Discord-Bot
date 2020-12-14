@@ -278,11 +278,11 @@ public class YoutubeSearch extends ListenerAdapter {
         int count = 0;
         synchronized (queue) {
             for (AudioTrack tracks : queue) {
-                if (count < 10) {
-                    response.append("```Place: " + tracks.getPosition())
+                if (count < 10 && !queue.isEmpty()) {
+                    response.append("```Place: " + count)
                             .append("\nTitle: " + tracks.getInfo().title)
                             .append("\nAuthor: " + tracks.getInfo().author)
-                            .append("\nLength: " + tracks.getInfo().length + " Minutes```");
+                            .append("\nLength: " + TimeUnit.MILLISECONDS.toMinutes(tracks.getInfo().length) + " Minutes```");
                     count++;
                 }
             }

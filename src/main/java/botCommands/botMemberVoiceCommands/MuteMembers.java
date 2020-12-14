@@ -14,7 +14,7 @@ public class MuteMembers extends ListenerAdapter {
 
         String[] message = event.getMessage().getContentRaw().split(" ", 3);
 
-        if (".mute".equals(message[0]) && event.getMember().getPermissions().contains(Permission.VOICE_MUTE_OTHERS)) {
+        if (".mute".equals(message[0]) && event.getMember().getPermissions().contains(Permission.VOICE_MUTE_OTHERS) || event.getMember().isOwner()) {
             if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().isMuted()) {
                 event.getGuild().mute(event.getMessage().getMentionedMembers().get(0), true).queue();
                 event.getChannel().sendMessage(":mute:")
@@ -37,9 +37,11 @@ public class MuteMembers extends ListenerAdapter {
                         .queue();
             } else if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().inVoiceChannel()) {
                 event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + "User Not Yet in Voice Channel").queue();
-            } else {
+            } else if (event.getMember().getPermissions().contains(Permission.VOICE_MUTE_OTHERS) || event.getMember().isOwner()) {
                 event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + ":mute: already").queue();
+            } else {
+                event.getChannel().sendMessage("already :sound:").queue();
             }
         }
     }
-}   
+}

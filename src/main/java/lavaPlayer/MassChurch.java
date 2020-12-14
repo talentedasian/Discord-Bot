@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -22,16 +23,6 @@ import java.util.concurrent.TimeUnit;
 public class MassChurch extends ListenerAdapter {
     private final DefaultAudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
-
-    private boolean mass;
-
-    public boolean isMass() {
-        return mass;
-    }
-
-    public void setMass(boolean mass) {
-        this.mass = mass;
-    }
 
     public MassChurch() {
         this.playerManager = new DefaultAudioPlayerManager();
@@ -56,7 +47,7 @@ public class MassChurch extends ListenerAdapter {
             BooleanMass.settingMass(event.getChannel(),  true);
             event.getChannel().sendMessage(":pray: :prayer_beads: **PRAYER TAYO NA NGAYON SA :church: TANG INA WAG MAINGAY**").queue();
         } else if (event.getMessage().getChannel().equals(event.getGuild().getTextChannelsByName("music-room", true).get(0)) && BooleanMass.isMass()
-                && !event.getMember().isOwner() && !event.getAuthor().isBot()) {
+                && !event.getMember().isOwner() && !event.getAuthor().isBot() && event.getMember().getPermissions().contains(Permission.PRIORITY_SPEAKER)) {
             event.getMessage().delete().queueAfter(4, TimeUnit.SECONDS);
             event.getChannel().sendMessage("**BAWAS POINTS KA SA :church: :cloud:** " +  event.getMember().getAsMention() + "**NAGMIMISA TAYO EH TANG INA NAMAN OH**").queue();
         }
@@ -80,7 +71,7 @@ public class MassChurch extends ListenerAdapter {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                channel.sendMessage("Adding To Queue " + firstTrack.getInfo().title +  firstTrack.getInfo().title + " by **" + firstTrack.getInfo().author + "**").queue();
+                channel.sendMessage(":heavy_plus_sign: Mass Upcoming **" + firstTrack.getInfo().title + " ** by " + " **JESUS**").queue();
                 play(channel.getGuild(), firstTrack);
 
 

@@ -8,17 +8,12 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class TrackScheduler extends AudioEventAdapter {
     private final DefaultAudioPlayer player;
     private final Queue<AudioTrack> queue;
     AudioTrack lastTrack;
-
-    private boolean mass;
-
-    public boolean isMass() {
-        return mass;
-    }
 
 
 
@@ -33,7 +28,7 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     public TrackScheduler(DefaultAudioPlayer player) {
         this.player = player;
-        this.queue = new LinkedList<>();
+        this.queue = new LinkedBlockingQueue<>();
 
 
     }
