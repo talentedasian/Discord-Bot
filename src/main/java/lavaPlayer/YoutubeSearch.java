@@ -146,16 +146,16 @@ public class YoutubeSearch extends ListenerAdapter {
         try {
             if (!musicManagers.scheduler.getQueue().isEmpty()) {
                 guild.getTextChannelsByName("music-room", true).get(0).sendMessage("**")
-                        .append(track.getInfo().title)
+                        .append(musicManagers.scheduler.getPlayingTrack().getInfo().title)
                         .append("** Currently Playing")
                         .append(" wait for your song to be played by jesus ")
                         .queue();
             } else {
                 guild.getTextChannelsByName("music-room", true).get(0).sendMessage(":notes: **")
-                        .append(track.getInfo().title)
+                        .append(musicManagers.scheduler.getPlayingTrack().getInfo().title)
                         .append("** by ** ")
-                        .append(track.getInfo().title + " ")
-                        .append(TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length)+ " :stop:watch**")
+                        .append(musicManagers.scheduler.getPlayingTrack().getInfo().author + " ")
+                        .append(TimeUnit.MILLISECONDS.toMinutes(musicManagers.scheduler.getPlayingTrack().getInfo().length)+ " :stop:watch**")
                         .queue();
                 musicManagers.scheduler.queue(track);
             }
@@ -178,7 +178,7 @@ public class YoutubeSearch extends ListenerAdapter {
 
     private void pauseTrack (TextChannel channel){
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
-        if (musicManagers.player.isPaused()) {
+        if (!musicManagers.player.isPaused()) {
             musicManagers.scheduler.pauseTrack();
             channel.sendMessage(":pause_button: current track").queue();
         } else if (musicManagers.scheduler.getQueue().isEmpty()) {
@@ -279,13 +279,15 @@ public class YoutubeSearch extends ListenerAdapter {
         Queue<AudioTrack> queue = musicManager.scheduler.getQueue();
         StringBuilder response = new StringBuilder();
         int count = 0;
-        for (AudioTrack tracks : queue) {
-            if (count < 10) {
-                response.append("```Place: " + tracks.getPosition())
-                        .append("\nTitle: " + tracks.getInfo().title)
-                        .append("\nAuthor: " + tracks.getInfo().author)
-                        .append("\nLength: " + tracks.getInfo().length + "```");
-                count++;
+        synchronized (queue) {
+            for (AudioTrack tracks : queue) {
+                if (count < 10) {
+                    response.append("```Place: " + tracks.getPosition())
+                            .append("\nTitle: " + tracks.getInfo().title)
+                            .append("\nAuthor: " + tracks.getInfo().author)
+                            .append("\nLength: " + tracks.getInfo().length + "```");
+                    count++;
+                }
             }
         }
         channel.sendMessage(response.toString()).queue();
