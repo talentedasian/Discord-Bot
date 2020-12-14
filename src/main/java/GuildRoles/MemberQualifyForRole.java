@@ -31,12 +31,14 @@ public class MemberQualifyForRole extends ListenerAdapter {
         } else if ("role".equals(message[0]) && "remove".equals(message[1]) && event.getChannel().equals(channelName)
                 && (event.getMember().isOwner() || event.getMember().getPermissions().contains(Permission.MANAGE_ROLES))) {
             event.getGuild().removeRoleFromMember(event.getMessage().getMentionedMembers().get(0), roleAssign).queue();
-            event.getChannel().sendMessage(event.getGuild().getRoleById(moderatorId).getAsMention() + "You Have Been Stripped of off Being a ***" + message[message.length-1].toUpperCase() + "***")
+            event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + "You Have Been Stripped of off Being a ***" + message[message.length-1].toUpperCase() + "***")
                     .queue();
         } else if (message[0].equalsIgnoreCase("role")  && !event.getChannel().equals(channelName)) {
             event.getMessage().delete().queue();
             event.getChannel().sendMessage("***Please Go To The Correct Room For this Message***")
                     .queue(m -> m.delete().queueAfter(5, TimeUnit.SECONDS));
+        } else if ("role".equals(message[0])) {
+
         }
 
     }

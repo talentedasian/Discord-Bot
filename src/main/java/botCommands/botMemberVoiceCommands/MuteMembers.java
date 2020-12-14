@@ -28,7 +28,7 @@ public class MuteMembers extends ListenerAdapter {
             } else {
 
             }
-        } else if (message[0].startsWith(".") && (!event.getMember().getPermissions().contains(Permission.VOICE_MUTE_OTHERS) || event.getMember().isOwner())) {
+        } else if (message[0].startsWith(".") && (!(event.getMember().getPermissions().contains(Permission.VOICE_MUTE_OTHERS)) || event.getMember().isOwner())) {
             event.getChannel().sendMessage("Only those who are not sinned are allowed to punish others").queue();
         } else if (".unmute".equals(message[0]) && (event.getMember().getPermissions().contains(Permission.VOICE_MUTE_OTHERS) || event.getMember().isOwner())) {
             if (event.getMessage().getMentionedMembers().get(0).getVoiceState().isMuted()) {
