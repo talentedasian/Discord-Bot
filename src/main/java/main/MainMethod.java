@@ -6,6 +6,7 @@ import botCommands.BotInfoCommand;
 import botCommands.botMemberVoiceCommands.DisconnectMember;
 import botCommands.botMemberJoin.MemberJoinLeave;
 import botCommands.botMemberVoiceCommands.MoveMember;
+import botCommands.botMemberVoiceCommands.MuteMembers;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import lavaPlayer.MassChurch;
 import lavaPlayer.YoutubeSearch;
@@ -43,6 +44,7 @@ public class MainMethod implements EventListener {
 				.setStatus(OnlineStatus.ONLINE)
 				.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS, CacheFlag.CLIENT_STATUS, CacheFlag.MEMBER_OVERRIDES)
 				.setAutoReconnect(true)
+				.addEventListeners(new MuteMembers())
 				.addEventListeners(new MassChurch())
 				.addEventListeners(new InBetween())
 				.addEventListeners(new MemberQualifyForRole())
