@@ -28,6 +28,18 @@ public class MuteMembers extends ListenerAdapter {
             }
         } else if (message[0].startsWith(".") && event.getMember().getPermissions().contains(Permission.VOICE_MUTE_OTHERS)) {
             event.getChannel().sendMessage("Only those who are not sinned are allowed to punish others").queue();
+        } else if (".unmute".equals(message[0]) && event.getMember().getPermissions().contains(Permission.VOICE_MUTE_OTHERS)) {
+            if (event.getMessage().getMentionedMembers().get(0).getVoiceState().isMuted()) {
+                event.getGuild().mute(event.getMessage().getMentionedMembers().get(0), false).queue();
+                event.getChannel().sendMessage(":sound:")
+                        .append(event.getMessage().getMentionedMembers().get(0).getAsMention() + " reason: ")
+                        .append(message[message.length - 1])
+                        .queue();
+            } else if (!event.getMessage().getMentionedMembers().get(0).getVoiceState().inVoiceChannel()) {
+                event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + "User Not Yet in Voice Channel").queue();
+            } else {
+                event.getChannel().sendMessage(event.getMessage().getMentionedMembers().get(0).getAsMention() + ":mute: already").queue();
+            }
         }
     }
-}
+}   
