@@ -12,6 +12,7 @@ src/main/java/main/HiddenToken.java
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
+discord.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
