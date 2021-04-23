@@ -1,6 +1,12 @@
 package lavaPlayer;
 
-import com.sedmelluq.discord.lavaplayer.player.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.TimeUnit;
+
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
@@ -8,15 +14,13 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
+
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
-
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class YoutubeSearch extends ListenerAdapter {
 
@@ -82,11 +86,14 @@ public class YoutubeSearch extends ListenerAdapter {
                 event.getChannel().sendMessage(":do_not_litter::exclamation: Go to " + event.getGuild().getTextChannelsByName("music-room",true).get(0).getAsMention()).queue();
         } else if ("~queue".equals(command[0]) && "contents".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
                 sendQueue(event.getChannel());
+        } else if ("~loopqueue".equals(command[0]) && "on".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
+            	setRepeatQueue(event.getChannel(), true);
+        } else if ("~loopqueue".equals(command[0]) && "off".equals(command[1]) && supposedChannel.equals(event.getGuild().getTextChannelsByName("music-room", true).get(0))) {
+        		setRepeatQueue(event.getChannel(), false);
         }
 
-
         super.onGuildMessageReceived(event);
-              }
+      }
 
     public void loadAndPlay(final TextChannel channel, final String trackUrl) {
 
@@ -200,7 +207,6 @@ public class YoutubeSearch extends ListenerAdapter {
             channel.sendMessage("Track is currently playing by jesus.").queue();
         }
 
-
     }
     private void stopTrack (TextChannel channel) {
         GuildMusicManager musicManagers = getGuildAudioPlayer(channel.getGuild());
@@ -262,9 +268,9 @@ public class YoutubeSearch extends ListenerAdapter {
     }
 
     private void setRepeat (TextChannel channel, boolean repeat) {
-            GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
 
-            musicManager.scheduler.setRepeat(repeat);
+        musicManager.scheduler.setRepeat(repeat);
         if (!repeat) {
             channel.sendMessage(":repeat: **OFF**").queue();
         } else {
@@ -289,8 +295,17 @@ public class YoutubeSearch extends ListenerAdapter {
             }
         }
         channel.sendMessage(response.toString()).queue();
-
-
+    }
+    
+    private void setRepeatQueue (TextChannel channel, boolean repeatQueue) {
+    	GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+    	
+    	musicManager.scheduler.setRepeatQueue(repeatQueue);
+    	if (!repeatQueue) {
+            channel.sendMessage(":repeat queue: **OFF**").queue();
+        } else {
+            channel.sendMessage(":repeat queue: **ON**").queue();
+        }
     }
 
 
