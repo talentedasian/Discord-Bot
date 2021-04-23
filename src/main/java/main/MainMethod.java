@@ -36,7 +36,7 @@ public class MainMethod implements EventListener {
 		intents.add(GatewayIntent.GUILD_MESSAGES);
 		intents.add(GatewayIntent.GUILD_VOICE_STATES);
 
-		JDA jda = JDABuilder.createDefault("NzU3NTE3MzcwNjE2MTg0ODgz.X2hjBw.sKD7Zcr7ZkM-bdQ3gl_cP5aVl98", intents).setAudioSendFactory(new NativeAudioSendFactory())
+		JDA jda = JDABuilder.createDefault("", intents).setAudioSendFactory(new NativeAudioSendFactory())
 				.setActivity(Activity.listening("Playing death With Satan"))
 				.setStatus(OnlineStatus.ONLINE)
 				.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS, CacheFlag.CLIENT_STATUS, CacheFlag.MEMBER_OVERRIDES)
